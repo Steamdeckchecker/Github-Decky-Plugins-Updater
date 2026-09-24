@@ -1,0 +1,10 @@
+#Meine Repos
+https://github.com/Steamdeckchecker/SDC-Benchmark-
+https://github.com/Steamdeckchecker/TrailerHero-SteamOS-Bazzite-
+https://github.com/Steamdeckchecker/Steam-Deck-Checker-Video-Checker
+https://github.com/Ciphay/Decky-File-Manager
+https://github.com/BrenticusMaximus/ThemeDeck
+https://github.com/Hooandee/panel-de-control
+https://github.com/eugeniosegala/MAKO
+https://github.com/LoZazaMastro/Quick-Settings
+https://github.com/LoZazaMastro/Shortcuts

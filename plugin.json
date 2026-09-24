@@ -1,0 +1,13 @@
+{
+  "name": "Github Plugin Updater",
+  "author": "Fabian Petrusky",
+  "flags": ["root"],
+  "api_version": 1,
+  "publish": {
+    "tags": [
+      "utility",
+      "github"
+    ],
+    "description": "Liest repos.txt und installiert neue GitHub-Release-ZIPs automatisch in Decky."
+  }
+}
