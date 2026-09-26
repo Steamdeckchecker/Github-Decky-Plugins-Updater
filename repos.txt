@@ -8,3 +8,5 @@ https://github.com/Hooandee/panel-de-control
 https://github.com/eugeniosegala/MAKO
 https://github.com/LoZazaMastro/Quick-Settings
 https://github.com/LoZazaMastro/Shortcuts
+https://github.com/Steamdeckchecker/Launch-Curtain-SteamOS-Bazzite
+https://github.com/Steamdeckchecker/Github-Decky-Plugins-Updater
