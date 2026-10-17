@@ -13,3 +13,4 @@ https://github.com/Steamdeckchecker/Github-Decky-Plugins-Updater
 https://github.com/Steamdeckchecker/Quest-Compendium-Decky
 https://github.com/justinca92/spindeck
 https://github.com/Kaal31/benderthemes
+https://github.com/PeroTuncay/DeckyHelixSRManager
