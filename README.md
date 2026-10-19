@@ -1,6 +1,6 @@
 # GitHub Plugin Updater
 
-![Logo des GitHub Plugin Updaters](Logo.png)
+<img src="Logo.png" alt="Logo des GitHub Plugin Updaters" width="33%">
 
 **Decky-Plugin für SteamOS und Bazzite:** Liest `repos.txt`, prüft GitHub-Releases und installiert neue oder neuere Plugin-Versionen automatisch.
 
