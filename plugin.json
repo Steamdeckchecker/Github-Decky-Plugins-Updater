@@ -8,6 +8,6 @@
       "utility",
       "github"
     ],
-    "description": "Liest repos.txt und installiert neue GitHub-Release-ZIPs automatisch in Decky."
+    "description": "Überwacht gespeicherte GitHub-Repositories und installiert neue Decky-Plugin-Releases."
   }
 }

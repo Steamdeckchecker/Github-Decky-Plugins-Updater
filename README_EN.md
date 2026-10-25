@@ -9,6 +9,7 @@
 ## Features
 
 - Stores followed repositories in Decky settings. On the first start after upgrading, entries from older versions are imported once.
+- If a `repos.txt` exists in Downloads, you can import its links with a button. Already followed repositories are not duplicated.
 - **Browse Decky Plugins** opens a searchable catalog of plugins, authors, tags and releases. **Add to Updater** saves a repository internally; existing entries show **Remove from Updater**.
 - **Search GitHub** finds plugin names, `owner/repo`, or GitHub URLs beyond the curated catalog. Search results can be added to the followed list.
 - **Other versions** lists published release ZIPs and changelogs. You can explicitly confirm an older version or prerelease. A manually selected older version is retained, pausing automatic updates for that repository until you choose **Follow latest version**.
@@ -25,9 +26,9 @@
 
 ## Installation
 
-1. Download and extract the supplied `github-plugin-updater-v1.9.1.zip`.
+1. Download and extract the supplied `github-plugin-updater-v1.9.2.zip`.
 2. Copy its `github-plugin-updater` folder into `~/homebrew/plugins/`. For upgrades, replace the existing folder rather than creating another installation with a different name.
-3. Restart Decky Loader or the device. Under **Settings → Repository storage**, you should see **Backend v1.9.1**.
+3. Restart Decky Loader or the device. Under **Settings → Repository storage**, you should see **Backend v1.9.2**.
 
 If Decky is missing after a restart with an older updater version, run `sudo systemctl restart plugin_loader.service` in a terminal to restore Decky Loader, then install this update.
 
@@ -41,7 +42,9 @@ The plugin uses Decky's `root` flag because automatic installation requires writ
 
 Open **Browse Decky Plugins** and select **Add to Updater** for plugins you want to follow. Under **Followed repositories**, you can remove individual entries or associate them with an installed Decky plugin. The list lives in Decky's plugin settings and survives restarts and updates. No Downloads file is needed for checks or installations.
 
-**Upgrading from older versions:** On its first start, the plugin imports valid repository entries from the former Downloads text file into its internal list. Afterward, manage every repository in the plugin; later edits to the old file are not imported.
+**Optional file import:** If `repos.txt` exists in your configured XDG Downloads folder, `~/Downloads`, `/home/deck/Downloads`, or `/home/bazzite/Downloads`, an **Import repos.txt** button appears under **Followed repositories**. Press it to add valid GitHub links to the internal list. Comments and empty lines are ignored, duplicates skipped, and the file is left untouched. A message reports how many entries were added, already present, or invalid. If you create the file while the plugin view is open, reopen the view to reveal the button. Later file changes are imported only when you press it again.
+
+**Upgrading from older versions:** On its first start, the plugin imports valid repository entries from the former Downloads text file into its internal list. Afterward, manage repositories in the plugin; later edits to the file are imported only when you press the import button.
 
 ## GitHub search and version selection
 

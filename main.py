@@ -1,10 +1,12 @@
 """Decky backend for GitHub release ZIP downloads."""
 import asyncio
+import copy
 import json
 import logging
 import os
 import pwd
 import re
+import secrets
 import shutil
 import ssl
 import stat
@@ -24,11 +26,12 @@ MAX_DOWNLOAD = 250 * 1024 * 1024
 MAX_UNPACKED = 350 * 1024 * 1024
 MAX_CATALOG = 8 * 1024 * 1024
 CATALOG_URL = "https://safetzahirovic.github.io/decky-plugins-explorer/data/plugins.json"
-HEADERS = {"User-Agent": "GithubPluginUpdater/1.7.2", "Accept": "application/vnd.github+json"}
+HEADERS = {"User-Agent": "GithubPluginUpdater/1.9.2", "Accept": "application/vnd.github+json"}
 CA_FILES = ("/etc/ssl/certs/ca-certificates.crt", "/etc/ssl/cert.pem", "/etc/pki/tls/certs/ca-bundle.crt")
+SELF_REPO = "Steamdeckchecker/Github-Decky-Plugins-Updater"
 SELF_REPOS = frozenset({
     "steamdeckchecker/github-decky-plugins-updatergithub-decky-plugins-updater",
-    "steamdeckchecker/github-decky-plugins-updater",
+    SELF_REPO.casefold(),
 })
 
 def is_self_repo(repo):
@@ -166,6 +169,39 @@ def _release_links(page):
             links.append(match.group(2).replace("&amp;", "&"))
     return links
 
+def _github_json(url):
+    request = urllib.request.Request(url, headers=HEADERS)
+    try:
+        with _verified_open(request, timeout=20) as response:
+            return json.loads(response.read(4 * 1024 * 1024 + 1))
+    except urllib.error.URLError as exc:
+        if not _retryable_transport_error(exc):
+            raise
+        return json.loads(_curl_get(url, timeout=25, max_bytes=4 * 1024 * 1024))
+
+def _github_search(query, page):
+    direct = normalize_repo(query)
+    if direct:
+        urls = [f"https://api.github.com/repos/{direct}"]
+    else:
+        terms = urllib.parse.urlencode({"q": query, "per_page": 12, "page": page})
+        urls = [f"https://api.github.com/search/repositories?{terms}"]
+    data = _github_json(urls[0])
+    items = [data] if direct else data.get("items", [])
+    if not isinstance(items, list):
+        raise ValueError("GitHub hat keine Suchergebnisse geliefert.")
+    results = []
+    for item in items:
+        if not isinstance(item, dict) or not (repo := normalize_repo(item.get("full_name"))):
+            continue
+        owner = item.get("owner") if isinstance(item.get("owner"), dict) else {}
+        results.append({"repo": repo, "name": repo.split("/", 1)[1],
+                        "author": owner.get("login") or repo.split("/", 1)[0],
+                        "description": str(item.get("description") or "")[:400],
+                        "stars": max(0, int(item.get("stargazers_count") or 0)),
+                        "archived": item.get("archived") is True})
+    return {"plugins": results, "has_more": not direct and len(items) == 12}
+
 def deck_home():
     configured = os.environ.get("DECKY_USER_HOME")
     if configured and Path(configured).is_absolute():
@@ -207,6 +243,21 @@ def repos_file():
             return path
     return None
 
+def read_repos_import():
+    """Read at most 128 KiB from the first regular Downloads/repos.txt."""
+    path = repos_file()
+    if path is None:
+        return None, ""
+    flags = os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_NONBLOCK", 0)
+    descriptor = os.open(path, flags)
+    with os.fdopen(descriptor, "rb") as source:
+        if not stat.S_ISREG(os.fstat(source.fileno()).st_mode):
+            raise OSError("repos.txt is not a regular file")
+        content = source.read(128_001)
+    if len(content) > 128_000:
+        raise ValueError("repos.txt is too large")
+    return path, content.decode("utf-8-sig")
+
 def normalize_repo(value):
     if not isinstance(value, str):
         return None
@@ -215,6 +266,15 @@ def normalize_repo(value):
     value = re.sub(r"/releases(?:/.*)?$", "", value, flags=re.I)
     value = re.sub(r"\.git$", "", value, flags=re.I)
     return value if REPO.fullmatch(value) and ".." not in value else None
+
+def unique_repos(values):
+    result, seen = [], set()
+    for value in values:
+        repo = normalize_repo(value)
+        if repo and repo.casefold() not in seen:
+            result.append(repo)
+            seen.add(repo.casefold())
+    return result
 
 def version_key(value):
     if not isinstance(value, str):
@@ -240,12 +300,14 @@ class Plugin:
         self.settings_path = settings_dir / "settings.json"
         self.lock = asyncio.Lock()
         self.check_lock = asyncio.Lock()
-        self.settings = {"repos": [], "downloaded_versions": {}, "repo_plugin_map": {},
+        self.settings = {"repos": [], "repo_storage_version": 0,
+                         "downloaded_versions": {}, "repo_plugin_map": {},
+                         "pinned_versions": {},
                          "last_check": {}, "update_mode": "automatic", "pending_updates": [],
                          "declined_versions": {}, "restart_pending": False,
                          "restart_dispatched": False, "restart_token": "", "restart_error": "",
                          "restart_error_detail": "",
-                         "self_update_inflight": {}}
+                         "self_update_inflight": {}, "last_self_check": 0}
         self.check_progress = {"running": False, "percent": 0, "index": 0, "total": 0,
                                "repo": "", "phase": "Bereit", "bytes_done": 0, "bytes_total": 0,
                                "started": 0, "completed_at": 0, "rows": [], "result": None,
@@ -253,20 +315,32 @@ class Plugin:
         self.background_check = None
         self.catalog_task = None
         self.catalog_status = {"running": False, "plugins": [], "error": "", "fetched_at": 0}
+        self.github_search_task = None
+        self.github_search_status = {"running": False, "query": "", "page": 1, "plugins": [],
+                                     "has_more": False, "error": ""}
+        self.release_task = None
+        self.release_status = {"running": False, "repo": "", "page": 1, "releases": [],
+                               "has_more": False, "error": ""}
+        self.release_choices = {}
         self.initializing = True
         self.api_retry_at = 0
         try:
             saved = json.loads(self.settings_path.read_text(encoding="utf-8"))
-            self.settings["repos"] = list(dict.fromkeys(
-                repo for item in saved.get("repos", [])
-                if (repo := normalize_repo(item))
-            ))
+            if not isinstance(saved, dict):
+                raise ValueError("Invalid settings format")
+            saved_repos = saved.get("repos", [])
+            self.settings["repos"] = unique_repos(saved_repos if isinstance(saved_repos, list) else [])
+            self.settings["repo_storage_version"] = 1 if saved.get("repo_storage_version") == 1 else 0
             versions = saved.get("downloaded_versions", {})
             if isinstance(versions, dict):
                 self.settings["downloaded_versions"] = versions
             mapping = saved.get("repo_plugin_map", {})
             if isinstance(mapping, dict):
                 self.settings["repo_plugin_map"] = mapping
+            pins = saved.get("pinned_versions", {})
+            if isinstance(pins, dict):
+                self.settings["pinned_versions"] = {repo: tag for repo, tag in pins.items()
+                    if repo in self.settings["repos"] and isinstance(tag, str) and len(tag) <= 160}
             if saved.get("update_mode") in ("automatic", "ask"):
                 self.settings["update_mode"] = saved["update_mode"]
             pending = saved.get("pending_updates", [])
@@ -282,6 +356,9 @@ class Plugin:
             inflight = saved.get("self_update_inflight", {})
             if isinstance(inflight, dict):
                 self.settings["self_update_inflight"] = inflight
+            last_self_check = saved.get("last_self_check", 0)
+            if type(last_self_check) in (int, float) and 0 <= last_self_check <= time.time():
+                self.settings["last_self_check"] = last_self_check
             declined = saved.get("declined_versions", {})
             if isinstance(declined, dict):
                 self.settings["declined_versions"] = declined
@@ -294,12 +371,20 @@ class Plugin:
                     self.check_progress["result"] = last_check["result"]
         except (OSError, ValueError, TypeError) as exc:
             LOG.info("Starting with empty settings: %s", exc)
-        LOG.info("Github Plugin Updater 1.7.2 bereit; %s Repositories geladen", len(self.settings["repos"]))
+        LOG.info("Github Plugin Updater 1.9.2 bereit; %s Repositories geladen", len(self.settings["repos"]))
         try:
-            await self.import_default_repos_file()
-        except Exception:
-            LOG.exception("repos.txt beim Start nicht lesbar; gespeicherte Liste bleibt erhalten")
+            self._migrate_legacy_repos()
+        except (OSError, UnicodeError, ValueError):
+            LOG.exception("Einmalige Übernahme von repos.txt fehlgeschlagen; gespeicherte Liste bleibt erhalten")
         self._recover_self_update()
+        # The updater always installs its own newer releases automatically.
+        # Discard older self-approval and pin state when upgrading this policy.
+        self.settings["pending_updates"] = [item for item in self.settings["pending_updates"]
+                                            if not is_self_repo(item.get("repo"))]
+        for key in ("declined_versions", "pinned_versions"):
+            for repo in list(self.settings[key]):
+                if is_self_repo(repo):
+                    self.settings[key].pop(repo, None)
         # Carry a restart across a self-update. Older releases launched an
         # external restart helper; an acknowledgement means it signalled Steam.
         if not self.settings["pending_updates"] and self.settings["restart_pending"] and self._restart_acknowledged():
@@ -321,6 +406,13 @@ class Plugin:
         self.task = asyncio.create_task(self._daily_scheduler())
 
     async def _unload(self):
+        for task in (self.github_search_task, self.release_task):
+            if task and not task.done():
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
         if self.catalog_task and not self.catalog_task.done():
             self.catalog_task.cancel()
             try:
@@ -349,13 +441,36 @@ class Plugin:
             if os.path.exists(name):
                 os.unlink(name)
 
+    def _migrate_legacy_repos(self):
+        """Import the old Downloads list once; settings.json owns it afterward."""
+        if self.settings["repo_storage_version"] == 1:
+            return
+        path = repos_file()
+        if path:
+            if path.stat().st_size > 128_000:
+                raise ValueError("repos.txt ist zu groß für die einmalige Übernahme.")
+            content = path.read_text(encoding="utf-8")
+            seen = {repo.casefold() for repo in self.settings["repos"]}
+            added = 0
+            for line in content.splitlines():
+                if line.lstrip().startswith("#"):
+                    continue
+                repo = normalize_repo(line)
+                if repo and repo.casefold() not in seen:
+                    self.settings["repos"].append(repo)
+                    seen.add(repo.casefold())
+                    added += 1
+            LOG.info("Einmalige Übernahme aus %s: %s zusätzliche Repositories", path, added)
+        self.settings["repo_storage_version"] = 1
+        self._save()
+
     def _recover_self_update(self):
         inflight = self.settings["self_update_inflight"]
         if not inflight:
             return
         repo = inflight.get("repo")
         previous = version_key(inflight.get("previous_version"))
-        expected = version_key(inflight.get("tag"))
+        expected = version_key(inflight.get("expected_version")) or version_key(inflight.get("tag"))
         plugin = next((item for item in self._installed_plugins()
                        if item["folder"] == "github-plugin-updater"
                        and item["package"] == "github-plugin-updater"
@@ -369,6 +484,7 @@ class Plugin:
             self.settings["downloaded_versions"][repo] = inflight["tag"]
             self.settings["repo_plugin_map"][repo] = "github-plugin-updater"
             self.settings["declined_versions"].pop(repo, None)
+            self.settings["last_self_check"] = time.time()
             self.settings["restart_pending"] = True
             self._status_row(repo, "updated", name=plugin["name"], version=plugin["version"])
             if had_pending:
@@ -382,17 +498,24 @@ class Plugin:
         except OSError:
             LOG.exception("Selbstupdate-Status konnte nicht gespeichert werden")
 
-    async def _mark_self_update(self, repo, tag, installed):
+    async def _mark_self_update(self, repo, tag, installed, asset_name=""):
         if is_self_repo(repo) and installed:
             async with self.lock:
                 self.settings["self_update_inflight"] = {
-                    "repo": repo, "tag": tag, "previous_version": installed["version"]}
+                    "repo": repo, "tag": tag, "expected_version": asset_name,
+                    "previous_version": installed["version"]}
                 self._save()
 
     async def get_repos(self):
         installed = self._installed_plugins()
         resolved = {repo: self._match_installed(repo, installed) for repo in self.settings["repos"]}
-        return {"backend_version": "1.7.2", "repos": list(self.settings["repos"]), "installed": installed,
+        try:
+            import_path = await asyncio.wait_for(asyncio.to_thread(repos_file), timeout=3)
+        except (asyncio.TimeoutError, OSError):
+            import_path = None
+        return {"backend_version": "1.9.2", "repos": list(self.settings["repos"]), "installed": installed,
+                "import_file": str(import_path) if import_path else None,
+                "pinned_versions": dict(self.settings["pinned_versions"]),
                 "update_mode": self.settings["update_mode"],
                 "pending_updates": [dict(item) for item in self.settings["pending_updates"]],
                 "restart_pending": self.settings["restart_pending"],
@@ -400,6 +523,58 @@ class Plugin:
                 "restart_error_detail": self.settings["restart_error_detail"],
                 "matches": {repo: value[0] for repo, value in resolved.items()},
                 "match_reasons": {repo: value[1] for repo, value in resolved.items()}}
+
+    async def import_repos_file(self):
+        """Merge a Downloads list on demand without changing or deleting the file."""
+        if self.check_lock.locked() or (self.background_check and not self.background_check.done()):
+            return {"success": False, "error": "repo_import_check_running"}
+        try:
+            path, content = await asyncio.wait_for(asyncio.to_thread(read_repos_import), timeout=8)
+        except asyncio.TimeoutError:
+            return {"success": False, "error": "repo_import_timeout"}
+        except UnicodeError:
+            return {"success": False, "error": "repo_import_unreadable"}
+        except ValueError:
+            return {"success": False, "error": "repo_import_too_large"}
+        except OSError:
+            return {"success": False, "error": "repo_import_unreadable"}
+        if path is None:
+            return {"success": False, "error": "repo_import_missing"}
+        valid, invalid = [], 0
+        for line in content.splitlines():
+            if not line.strip() or line.lstrip().startswith("#"):
+                continue
+            repo = normalize_repo(line)
+            if repo:
+                valid.append(repo)
+            else:
+                invalid += 1
+        async with self.lock:
+            if self.check_lock.locked() or (self.background_check and not self.background_check.done()):
+                return {"success": False, "error": "repo_import_check_running"}
+            previous = self.settings
+            updated = copy.deepcopy(previous)
+            seen = {repo.casefold() for repo in updated["repos"]}
+            added = existing = 0
+            for repo in valid:
+                if repo.casefold() in seen:
+                    existing += 1
+                else:
+                    updated["repos"].append(repo)
+                    seen.add(repo.casefold())
+                    added += 1
+            if added:
+                self.settings = updated
+                try:
+                    self._save()
+                except OSError as exc:
+                    self.settings = previous
+                    LOG.warning("Importierte Repositories konnten nicht gespeichert werden: %s", exc)
+                    return {"success": False, "error": "repo_import_save_failed"}
+        LOG.info("Repos aus %s importiert: %s neu, %s vorhanden, %s ungültig",
+                 path, added, existing, invalid)
+        return {"success": True, "repos": list(self.settings["repos"]),
+                "file": str(path), "added": added, "existing": existing, "invalid": invalid}
 
     async def start_catalog(self, force=False):
         if self.catalog_status["running"]:
@@ -425,16 +600,139 @@ class Plugin:
                                    "error": str(exc)[:300]}
 
     async def get_catalog_status(self):
+        return {**self.catalog_status, "tracked": list(self.settings["repos"])}
+
+    async def start_github_search(self, query, page=1):
+        if not isinstance(query, str) or not query.strip() or len(query) > 120 or type(page) is not int or not 1 <= page <= 10:
+            return {"success": False, "error": "Ungültige GitHub-Suche."}
+        query = query.strip()
+        if self.github_search_task and not self.github_search_task.done():
+            self.github_search_task.cancel()
+        self.github_search_status = {"running": True, "query": query, "page": page,
+                                     "plugins": [], "has_more": False, "error": ""}
+        self.github_search_task = asyncio.create_task(self._run_github_search(query, page))
+        return {"success": True}
+
+    async def _run_github_search(self, query, page):
         try:
-            path = repos_file()
-            if path and path.stat().st_size <= 128_000:
-                tracked = list(dict.fromkeys(repo for line in path.read_text(encoding="utf-8").splitlines()
-                                                 if (repo := normalize_repo(line)) and not line.lstrip().startswith("#")))
-            else:
-                tracked = []
-        except (OSError, UnicodeError):
-            tracked = list(self.settings["repos"])
-        return {**self.catalog_status, "tracked": tracked}
+            result = await asyncio.to_thread(_github_search, query, page)
+            self.github_search_status = {"running": False, "query": query, "page": page,
+                                         **result, "error": ""}
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            LOG.warning("GitHub-Suche fehlgeschlagen: %s", exc)
+            self.github_search_status = {**self.github_search_status, "running": False,
+                                         "error": str(exc)[:300]}
+
+    async def get_github_search_status(self):
+        return {**self.github_search_status, "tracked": list(self.settings["repos"])}
+
+    def _public_release_options(self, repo, page):
+        prefix = f"/{repo}/releases/"
+        html = _read_public_page(f"https://github.com/{repo}/releases?page={page}")
+        tags = []
+        for link in _release_links(html):
+            path = urllib.parse.urlsplit(link).path
+            if path.lower().startswith((prefix + "tag/").lower()):
+                tag = urllib.parse.unquote(path[len(prefix + "tag/"):])
+                if tag and "/" not in tag and tag not in tags:
+                    tags.append(tag)
+        options = []
+        for tag in tags[:20]:
+            fragment = _read_public_page(f"https://github.com{prefix}expanded_assets/{urllib.parse.quote(tag, safe='')}")
+            for link in _release_links(fragment):
+                path = urllib.parse.urlsplit(link).path
+                asset_prefix = prefix + "download/" + urllib.parse.quote(tag, safe='') + "/"
+                if path.lower().startswith(asset_prefix.lower()) and path.lower().endswith(".zip"):
+                    name = urllib.parse.unquote(path[len(asset_prefix):])
+                    if name and "/" not in name:
+                        options.append({"tag": tag, "asset_name": name,
+                            "asset_url": "https://github.com" + path, "changelog": "",
+                            "prerelease": False, "published_at": ""})
+        return options, len(tags) >= 20
+
+    def _release_options(self, repo, page):
+        if time.time() < self.api_retry_at:
+            return self._public_release_options(repo, page)
+        url = f"https://api.github.com/repos/{repo}/releases?per_page=20&page={page}"
+        try:
+            data = _github_json(url)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (403, 429):
+                raise
+            self.api_retry_at = time.time() + 120
+            return self._public_release_options(repo, page)
+        if not isinstance(data, list):
+            raise ValueError("GitHub hat keine Release-Liste geliefert.")
+        data.sort(key=lambda item: str(item.get("published_at") or "") if isinstance(item, dict) else "", reverse=True)
+        options = []
+        for release in data:
+            if not isinstance(release, dict) or release.get("draft") or not release.get("tag_name"):
+                continue
+            tag = release["tag_name"]
+            if not isinstance(tag, str) or len(tag) > 160:
+                continue
+            for asset in release.get("assets", []):
+                if (not isinstance(asset, dict) or not isinstance(asset.get("name"), str)
+                        or not asset["name"].lower().endswith(".zip")
+                        or asset.get("state", "uploaded") != "uploaded"):
+                    continue
+                options.append({"tag": tag, "asset_name": asset["name"],
+                    "asset_url": asset.get("browser_download_url", ""),
+                    "changelog": str(release.get("body") or "")[:16000],
+                    "prerelease": release.get("prerelease") is True,
+                    "published_at": str(release.get("published_at") or "")[:50]})
+        return options, len(data) == 20
+
+    async def start_release_lookup(self, repo_path, page=1):
+        repo = normalize_repo(repo_path)
+        if not repo or type(page) is not int or not 1 <= page <= 10:
+            return {"success": False, "error": "Ungültiges Repository oder Release-Seite."}
+        repo = next((item for item in self.settings["repos"]
+                     if item.casefold() == repo.casefold()), repo)
+        if self.release_task and not self.release_task.done():
+            self.release_task.cancel()
+        self.release_status = {"running": True, "repo": repo, "page": page,
+                               "releases": [], "has_more": False, "error": ""}
+        self.release_task = asyncio.create_task(self._run_release_lookup(repo, page))
+        return {"success": True}
+
+    async def _run_release_lookup(self, repo, page):
+        try:
+            options, more = await asyncio.to_thread(self._release_options, repo, page)
+            # Tokens identify server-fetched assets. The UI never supplies a download URL.
+            self.release_choices.clear()
+            releases = []
+            for item in options[:60]:
+                token = secrets.token_urlsafe(24)
+                self.release_choices[token] = {**item, "repo": repo, "page": page, "created": time.time()}
+                releases.append({"token": token, "tag": item["tag"], "asset_name": item["asset_name"],
+                                 "changelog": item["changelog"], "prerelease": item["prerelease"],
+                                 "published_at": item["published_at"]})
+            self.release_status = {"running": False, "repo": repo, "page": page,
+                                   "releases": releases, "has_more": more, "error": ""}
+        except asyncio.CancelledError:
+            raise
+        except Exception as exc:
+            LOG.warning("Release-Auswahl für %s fehlgeschlagen: %s", repo, exc)
+            self.release_status = {**self.release_status, "running": False, "error": str(exc)[:300]}
+
+    async def get_release_status(self):
+        matched, _ = self._match_installed(self.release_status["repo"], self._installed_plugins()) if self.release_status["repo"] else (None, None)
+        return {**self.release_status, "tracked": list(self.settings["repos"]),
+                "installed_version": matched["version"] if matched else "",
+                "pinned_versions": dict(self.settings["pinned_versions"])}
+
+    async def clear_version_pin(self, repo_path):
+        repo = next((item for item in self.settings["repos"]
+                     if item.casefold() == str(repo_path).casefold()), None)
+        if not repo:
+            return {"success": False, "error": "Repository nicht gefunden."}
+        async with self.lock:
+            self.settings["pinned_versions"].pop(repo, None)
+            self._save()
+        return {"success": True}
 
     async def get_check_status(self):
         return {**self.check_progress, "rows": [dict(row) for row in self.check_progress["rows"]],
@@ -452,7 +750,7 @@ class Plugin:
         if self.settings["restart_pending"] and not self.settings["restart_error"]:
             return {"success": False, "started": False, "error": "Decky wird nach den Freigaben neu gestartet."}
         self._progress(running=True, percent=0, index=0, total=0, repo="",
-                       phase="repos.txt einlesen", operation="scan", bytes_done=0, bytes_total=0,
+                       phase="Repository-Liste laden", operation="scan", bytes_done=0, bytes_total=0,
                        started=time.time(), completed_at=0, rows=[], result=None)
         self.background_check = asyncio.create_task(self._run_background_check())
         LOG.info("Updateprüfung im Hintergrund gestartet")
@@ -547,6 +845,12 @@ class Plugin:
             return candidates[0], None
         return None, ("Mehrere passende Installationen; bitte zuordnen." if candidates else None)
 
+    def _scan_repos(self, self_only=False):
+        # Keep the updater out of the user's list while checking it exactly
+        # once, even if an older install saved the obsolete repository URL.
+        repos = [] if self_only else [repo for repo in self.settings["repos"] if not is_self_repo(repo)]
+        return repos + [SELF_REPO]
+
     async def set_plugin_mapping(self, repo_path, folder):
         async with self.lock:
             if repo_path not in self.settings["repos"]:
@@ -574,145 +878,37 @@ class Plugin:
             self._save()
         return {"success": True, "update_mode": mode}
 
-    def _sync_repos_content(self, file_content):
-        LOG.info("Textimport begonnen: %s Zeichen", len(file_content))
-        if len(file_content) > 128_000:
-            return {"success": False, "error": "Liste ist zu groß."}
-        lines = [s.strip() for s in file_content.splitlines()
-                 if s.strip() and not s.lstrip().startswith("#")]
-        invalid = [s for s in lines if not normalize_repo(s)]
-        wanted = list(dict.fromkeys(repo for s in lines if (repo := normalize_repo(s))))
-        old = set(self.settings["repos"])
-        new = [repo for repo in wanted if repo not in old]
-        self.settings["repos"] = wanted
-        for removed in old - set(wanted):
-            self.settings["downloaded_versions"].pop(removed, None)
-            self.settings["repo_plugin_map"].pop(removed, None)
-            self.settings["declined_versions"].pop(removed, None)
-        self.settings["pending_updates"] = [entry for entry in self.settings["pending_updates"]
-                                            if entry.get("repo") in wanted]
-        self._save()
-        LOG.info("repos.txt synchronisiert: %s Repositories, %s neu, %s ungültig", len(wanted), len(new), len(invalid))
-        return {"success": True, "added": len(new), "invalid": len(invalid),
-                "repos": list(self.settings["repos"])}
-
-    async def _import_repos_content(self, file_content):
-        async with self.lock:
-            result = self._sync_repos_content(file_content)
-        self._schedule_restart_if_ready()
-        return result
-
-    async def _import_repos_file(self, file_path):
-        LOG.info("Dateiimport angefordert: %s", file_path)
-        try:
-            if not isinstance(file_path, str) or not file_path.strip():
-                return {"success": False, "error": "Bitte eine Textdatei auswählen."}
-            directories = download_dirs()
-            name = file_path.strip()
-            if name.startswith("~/"):
-                name = str(deck_home() / name[2:])
-            elif not Path(name).is_absolute() and Path(name).name == name:
-                found = [directory / name for directory in directories if (directory / name).is_file()]
-                if len(found) == 1:
-                    name = str(found[0])
-            path = Path(name).resolve(strict=True)
-            if (path.parent not in directories or path.suffix.lower() != ".txt"
-                    or not path.is_file() or Path(name).is_symlink()):
-                return {"success": False, "error": "Bitte eine .txt-Datei direkt aus einem angezeigten Downloads-Ordner auswählen."}
-            if path.stat().st_size > 128_000:
-                return {"success": False, "error": "Datei ist zu groß."}
-            async with self.lock:
-                content = path.read_text(encoding="utf-8")
-                result = self._sync_repos_content(content)
-            self._schedule_restart_if_ready()
-            return result
-        except (OSError, UnicodeError) as exc:
-            LOG.warning("Dateiimport gescheitert: %s", exc)
-            return {"success": False, "error": str(exc)}
-
-    async def import_default_repos_file(self):
-        LOG.info("Direktimport von repos.txt angefordert")
-        path = repos_file()
-        if path:
-            LOG.info("repos.txt gefunden: %s", path)
-            result = await self._import_repos_file(str(path))
-            result["file"] = str(path)
-            return result
-        return {"success": False, "error": "repos.txt fehlt. Geprüft: " + " · ".join(str(p) for p in download_dirs())}
-
     async def set_catalog_repo(self, repo_path, follow):
         repo = normalize_repo(repo_path)
         if not repo or not isinstance(follow, bool):
             return {"success": False, "error": "Ungültiges Repository."}
         if self.check_lock.locked() or (self.background_check and not self.background_check.done()):
             return {"success": False, "error": "Bitte zuerst die laufende Update-Prüfung abschließen."}
-        try:
-            async with self.lock:
-                path = repos_file()
-                if path is None:
-                    directory = next((folder for folder in download_dirs() if folder.is_dir()), None)
-                    if directory is None:
-                        return {"success": False, "error": "Downloads-Ordner nicht gefunden."}
-                    path = directory / "repos.txt"
-                if path.is_symlink() or (path.exists() and not path.is_file()):
-                    return {"success": False, "error": "repos.txt ist keine reguläre Datei."}
-                existing = path.exists()
-                if existing:
-                    handle = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
-                    with os.fdopen(handle, "r", encoding="utf-8", newline="") as input_file:
-                        info = os.fstat(input_file.fileno())
-                        if not stat.S_ISREG(info.st_mode):
-                            return {"success": False, "error": "repos.txt ist keine reguläre Datei."}
-                        if info.st_size > 128_000:
-                            return {"success": False, "error": "repos.txt ist zu groß."}
-                        content = input_file.read(128_001)
-                else:
-                    info = path.parent.stat()
-                    content = ""
-                if len(content) > 128_000:
-                    return {"success": False, "error": "repos.txt ist zu groß."}
-                lines = content.splitlines(keepends=True)
-                matched = lambda line: (not line.lstrip().startswith("#")
-                                        and (normalize_repo(line) or "").casefold() == repo.casefold())
-                present = any(matched(line) for line in lines)
-                if follow and not present:
-                    ending = "\r\n" if "\r\n" in content else "\n"
-                    new_content = content + (ending if content and not content.endswith(("\n", "\r")) else "")
-                    new_content += f"https://github.com/{repo}{ending}"
-                elif not follow and present:
-                    new_content = "".join(line for line in lines if not matched(line))
-                else:
-                    new_content = content
-                if new_content != content:
-                    if len(new_content) > 128_000:
-                        return {"success": False, "error": "repos.txt ist zu groß."}
-                    fd, temp_name = tempfile.mkstemp(prefix=".repos-", dir=path.parent)
-                    try:
-                        with os.fdopen(fd, "w", encoding="utf-8", newline="") as output:
-                            os.fchmod(output.fileno(), stat.S_IMODE(info.st_mode) if existing else 0o644)
-                            if hasattr(os, "fchown"):
-                                os.fchown(output.fileno(), info.st_uid, info.st_gid)
-                            output.write(new_content)
-                            output.flush()
-                            os.fsync(output.fileno())
-                        if existing:
-                            latest = path.stat(follow_symlinks=False)
-                            if ((latest.st_ino, latest.st_size, latest.st_mtime_ns)
-                                    != (info.st_ino, info.st_size, info.st_mtime_ns)):
-                                return {"success": False, "error": "repos.txt wurde zwischenzeitlich geändert. Bitte erneut versuchen."}
-                        elif path.exists() or path.is_symlink():
-                            return {"success": False, "error": "repos.txt wurde zwischenzeitlich erstellt. Bitte erneut versuchen."}
-                        os.replace(temp_name, path)
-                    finally:
-                        if os.path.exists(temp_name):
-                            os.unlink(temp_name)
-                result = self._sync_repos_content(new_content)
-                result.update(file=str(path), changed=new_content != content)
-            self._schedule_restart_if_ready()
-            return result
-        except (OSError, UnicodeError, ValueError) as exc:
-            LOG.warning("repos.txt konnte nicht geändert werden: %s", exc)
-            return {"success": False, "error": str(exc)}
+        async with self.lock:
+            existing = next((item for item in self.settings["repos"]
+                             if item.casefold() == repo.casefold()), None)
+            if (follow and existing) or (not follow and not existing):
+                return {"success": True, "changed": False, "repos": list(self.settings["repos"])}
+            previous = self.settings
+            updated = copy.deepcopy(previous)
+            if follow:
+                updated["repos"].append(repo)
+            else:
+                updated["repos"] = [item for item in updated["repos"] if item != existing]
+                for key in ("downloaded_versions", "repo_plugin_map", "declined_versions", "pinned_versions"):
+                    updated[key].pop(existing, None)
+                updated["pending_updates"] = [item for item in updated["pending_updates"]
+                                              if item.get("repo") != existing]
+            self.settings = updated
+            try:
+                self._save()
+            except OSError as exc:
+                self.settings = previous
+                LOG.warning("Interne Repository-Liste konnte nicht gespeichert werden: %s", exc)
+                return {"success": False, "error": "Repository-Liste konnte nicht gespeichert werden."}
+            result = {"success": True, "changed": True, "repos": list(updated["repos"])}
+        self._schedule_restart_if_ready()
+        return result
 
     def _check_public_releases(self, repo):
         prefix = f"/{repo}/releases/"
@@ -852,7 +1048,7 @@ class Plugin:
             if os.path.exists(temporary):
                 os.unlink(temporary)
 
-    def _install_zip(self, repo, zip_path, installed_plugin):
+    def _install_zip(self, repo, zip_path, installed_plugin, allow_older=False):
         if os.geteuid() != 0:
             raise PermissionError("Automatische Installation benötigt das Decky-Root-Flag. Plugin neu installieren und Decky neu starten.")
         homebrew = Path(os.environ.get("DECKY_HOME") or deck_home() / "homebrew")
@@ -930,7 +1126,10 @@ class Plugin:
                     raise ValueError("Installiertes Plugin ist diesem Repository nicht eindeutig zugeordnet.")
                 if any(item["folder"] != folder for item in name_matches):
                     raise ValueError("Der neue Plugin-Name wird bereits von einer anderen Installation verwendet.")
-            if installed_plugin and version_key(version) <= version_key(installed_plugin["version"]):
+            if installed_plugin and not allow_older and version_key(version) <= version_key(installed_plugin["version"]):
+                raise AlreadyCurrent(folder, installed_plugin["version"])
+            if (is_self_repo(repo) and installed_plugin
+                    and version_key(version) <= version_key(installed_plugin["version"])):
                 raise AlreadyCurrent(folder, installed_plugin["version"])
             data_dir = homebrew / "data" / "github-plugin-updater"
             data_dir.mkdir(parents=True, exist_ok=True)
@@ -1022,7 +1221,99 @@ class Plugin:
             self._save()
         return {"success": self._schedule_restart_if_ready()}
 
-    async def check_updates(self):
+    async def start_selected_install(self, token, confirmed=False):
+        choice = self.release_choices.get(token) if isinstance(token, str) else None
+        if not choice or time.time() - choice["created"] > 600 or confirmed is not True:
+            return {"success": False, "error": "Release-Auswahl abgelaufen. Bitte erneut öffnen und bestätigen."}
+        if (self.check_lock.locked() or self.check_progress["running"]
+                or self.settings["pending_updates"] or self.settings["restart_pending"]):
+            return {"success": False, "error": "Zuerst laufende Prüfung, Freigaben oder Neustart abschließen."}
+        self.release_choices.pop(token, None)
+        repo = choice["repo"]
+        self._progress(running=True, percent=0, index=1, total=1, repo=repo,
+                       phase="Release prüfen", operation="install", bytes_done=0, bytes_total=0,
+                       started=time.time(), completed_at=0, rows=[{"repo": repo,
+                       "name": repo.split("/", 1)[1], "previous": "", "version": choice["tag"],
+                       "state": "checking", "message": ""}], result=None)
+        self.background_check = asyncio.create_task(self._run_selected_install(choice))
+        return {"success": True}
+
+    async def _run_selected_install(self, choice):
+        repo, tag = choice["repo"], choice["tag"]
+        errors, updated = [], 0
+        async with self.check_lock:
+            try:
+                # Refetch this release page so a stale/mutated choice cannot install
+                # an asset that is no longer published by the selected repository.
+                live, _ = await asyncio.to_thread(self._release_options, repo, choice["page"])
+                asset = next((item for item in live if item["tag"] == tag
+                              and item["asset_name"] == choice["asset_name"]
+                              and item["asset_url"] == choice["asset_url"]), None)
+                if not asset:
+                    raise ValueError("GitHub-Release hat sich geändert. Bitte Versionen neu laden.")
+                plugin, reason = self._match_installed(repo, self._installed_plugins())
+                if reason:
+                    raise ValueError(reason)
+                selected_version = version_key(asset["asset_name"]) or version_key(tag)
+                if is_self_repo(repo) and (not plugin or not version_key(plugin["version"])
+                        or selected_version is None or selected_version <= version_key(plugin["version"])):
+                    raise ValueError("Das Updater-Plugin kann nur auf eine neuere Version aktualisiert werden.")
+                self.check_progress["rows"][0]["previous"] = plugin["version"] if plugin else ""
+                latest, _ = await asyncio.to_thread(self._release_options, repo, 1)
+                latest_tag = latest[0]["tag"] if latest else tag
+                self._progress(phase="ZIP herunterladen", percent=12)
+                self._status_row(repo, "downloading")
+                def download_progress(done, size):
+                    self._progress(bytes_done=done, bytes_total=size,
+                                   percent=12 + int(68 * done / size) if size else 12)
+                file_path = await asyncio.to_thread(self._download, repo, tag,
+                    {"name": asset["asset_name"], "browser_download_url": asset["asset_url"]}, download_progress)
+                self._progress(phase="ZIP installieren", percent=85)
+                self._status_row(repo, "installing")
+                await self._mark_self_update(repo, tag, plugin, asset["asset_name"])
+                installed_result = await asyncio.to_thread(self._install_zip, repo, file_path, plugin, True)
+                # A different selected release must stay selected until the user
+                # explicitly returns to the latest version.
+                async with self.lock:
+                    if repo.casefold() not in {item.casefold() for item in self.settings["repos"]}:
+                        self.settings["repos"].append(repo)
+                    if is_self_repo(repo):
+                        self.settings["self_update_inflight"] = {}
+                    self.settings["downloaded_versions"][repo] = tag
+                    self.settings["repo_plugin_map"][repo] = installed_result["folder"]
+                    self.settings["declined_versions"].pop(repo, None)
+                    downgraded = (plugin is not None and version_key(plugin["version"]) is not None
+                                  and version_key(installed_result["version"]) < version_key(plugin["version"]))
+                    if tag == latest_tag and not downgraded:
+                        self.settings["pinned_versions"].pop(repo, None)
+                    else:
+                        self.settings["pinned_versions"][repo] = tag
+                    self.settings["restart_pending"] = True
+                    self._save()
+                self._status_row(repo, "updated", name=installed_result["name"],
+                                 version=installed_result["version"])
+                updated = 1
+            except Exception as exc:
+                if is_self_repo(repo) and self.settings["self_update_inflight"]:
+                    async with self.lock:
+                        self.settings["self_update_inflight"] = {}
+                        self._save()
+                LOG.warning("Ausgewählte Version %s für %s fehlgeschlagen: %s", tag, repo, exc)
+                self._status_row(repo, "error", message=str(exc)[:300])
+                errors.append({"repo": repo, "error": str(exc)[:300]})
+            finally:
+                summary = {"success": not errors, "updated": updated, "errors": errors,
+                           "skipped": 0, "pending": len(self.settings["pending_updates"])}
+                finished = time.time()
+                self._progress(running=False, percent=100, repo="", phase="Prüfung abgeschlossen",
+                               operation="idle", completed_at=finished, result=summary,
+                               bytes_done=0, bytes_total=0)
+                async with self.lock:
+                    self.settings["last_check"] = {"rows": [dict(row) for row in self.check_progress["rows"]],
+                                                   "completed_at": finished, "result": summary}
+                    self._save()
+
+    async def check_updates(self, self_only=False):
         updated, errors, skipped = [], [], []
         async with self.check_lock:
             if self.settings["pending_updates"]:
@@ -1033,145 +1324,144 @@ class Plugin:
                 return {"success": False, "updated": [], "errors": [], "skipped": [],
                         "pending": [], "error": "Decky wird nach den Freigaben neu gestartet."}
             self._progress(running=True, percent=0, index=0, total=0, repo="",
-                           phase="repos.txt einlesen", operation="scan", bytes_done=0, bytes_total=0,
+                           phase="Repository-Liste laden", operation="scan", bytes_done=0, bytes_total=0,
                            started=time.time(), completed_at=0, rows=[], result=None)
             try:
-                sync = await self.import_default_repos_file()
-                if not sync["success"]:
-                    errors.append({"repo": "repos.txt", "error": sync["error"]})
-                    self._progress(rows=[{"repo": "repos.txt", "name": "repos.txt", "previous": "",
-                                          "version": "", "state": "error", "message": sync["error"]}])
-                else:
-                    installed = self._installed_plugins()
-                    repos = list(self.settings["repos"])
-                    total = len(repos)
-                    mode = self.settings["update_mode"]
-                    async with self.lock:
-                        self.settings["pending_updates"] = []
-                        self._save()
-                    rows = []
-                    for item in repos:
-                        match, _ = self._match_installed(item, installed)
-                        rows.append({"repo": item, "name": match["name"] if match else item.split("/")[-1],
-                                     "previous": match["version"] if match else "", "version": "",
-                                     "state": "pending", "message": ""})
-                    self._progress(rows=rows, total=total)
-                    for position, repo in enumerate(repos):
-                        self._progress(index=position + 1, total=total, repo=repo,
-                                       percent=int(100 * position / max(total, 1)), phase="Release prüfen",
-                                       bytes_done=0, bytes_total=0)
-                        self._status_row(repo, "checking")
-                        try:
-                            if repo not in self.settings["repos"]:
-                                self._status_row(repo, "skipped", message="Repository aus der Liste entfernt.")
+                installed = self._installed_plugins()
+                repos = self._scan_repos(self_only)
+                total = len(repos)
+                mode = self.settings["update_mode"]
+                async with self.lock:
+                    self.settings["pending_updates"] = []
+                    self._save()
+                rows = []
+                for item in repos:
+                    match, _ = self._match_installed(item, installed)
+                    rows.append({"repo": item, "name": match["name"] if match else item.split("/")[-1],
+                                 "previous": match["version"] if match else "", "version": "",
+                                 "state": "pending", "message": ""})
+                self._progress(rows=rows, total=total)
+                for position, repo in enumerate(repos):
+                    self._progress(index=position + 1, total=total, repo=repo,
+                                   percent=int(100 * position / max(total, 1)), phase="Release prüfen",
+                                   bytes_done=0, bytes_total=0)
+                    self._status_row(repo, "checking")
+                    try:
+                        if not is_self_repo(repo) and repo not in self.settings["repos"]:
+                            self._status_row(repo, "skipped", message="Repository aus der Liste entfernt.")
+                            continue
+                        if not is_self_repo(repo) and (pin := self.settings["pinned_versions"].get(repo)):
+                            reason = f"Version {pin} ausgewählt; automatische Updates pausiert."
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "skipped", message=reason)
+                            continue
+                        plugin, reason = self._match_installed(repo, installed)
+                        if plugin is None and reason:
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "skipped", message=reason)
+                            continue
+                        current = version_key(plugin["version"]) if plugin else None
+                        if plugin and current is None:
+                            reason = "Installierte Version fehlt oder ist nicht vergleichbar."
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "skipped", message=reason)
+                            continue
+                        result = await asyncio.to_thread(self._check_one, repo)
+                        if not result:
+                            reason = "Keine Release-ZIP unter den letzten 20 Releases."
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "skipped", message=reason)
+                            continue
+                        tag, asset = result
+                        newest = version_key(asset["name"]) or version_key(tag)
+                        if plugin and newest is None:
+                            reason = "Release-Version nicht erkennbar; kein Download."
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "skipped", message=reason)
+                            continue
+                        if plugin and newest <= current:
+                            reason = f"Installiert: {plugin['version']}; kein neueres Release."
+                            skipped.append({"repo": repo, "reason": reason})
+                            self._status_row(repo, "current", version=plugin["version"])
+                            continue
+                        if not is_self_repo(repo) and repo not in self.settings["repos"]:
+                            self._status_row(repo, "skipped", message="Repository aus der Liste entfernt.")
+                            continue
+                        if mode == "ask" and not is_self_repo(repo):
+                            if self.settings["declined_versions"].get(repo) == tag:
+                                skipped.append({"repo": repo, "reason": "Dieses Release wurde abgelehnt."})
+                                self._status_row(repo, "skipped", message="Dieses Release wurde abgelehnt.")
                                 continue
-                            plugin, reason = self._match_installed(repo, installed)
-                            if plugin is None and reason:
-                                skipped.append({"repo": repo, "reason": reason})
-                                self._status_row(repo, "skipped", message=reason)
-                                continue
-                            current = version_key(plugin["version"]) if plugin else None
-                            if plugin and current is None:
-                                reason = "Installierte Version fehlt oder ist nicht vergleichbar."
-                                skipped.append({"repo": repo, "reason": reason})
-                                self._status_row(repo, "skipped", message=reason)
-                                continue
-                            result = await asyncio.to_thread(self._check_one, repo)
-                            if not result:
-                                reason = "Keine Release-ZIP unter den letzten 20 Releases."
-                                skipped.append({"repo": repo, "reason": reason})
-                                self._status_row(repo, "skipped", message=reason)
-                                continue
-                            tag, asset = result
-                            newest = version_key(asset["name"]) or version_key(tag)
-                            if plugin and newest is None:
-                                reason = "Release-Version nicht erkennbar; kein Download."
-                                skipped.append({"repo": repo, "reason": reason})
-                                self._status_row(repo, "skipped", message=reason)
-                                continue
-                            if plugin and newest <= current:
-                                reason = f"Installiert: {plugin['version']}; kein neueres Release."
-                                skipped.append({"repo": repo, "reason": reason})
-                                self._status_row(repo, "current", version=plugin["version"])
-                                continue
-                            if repo not in self.settings["repos"]:
-                                self._status_row(repo, "skipped", message="Repository aus der Liste entfernt.")
-                                continue
-                            if mode == "ask":
-                                if self.settings["declined_versions"].get(repo) == tag:
-                                    skipped.append({"repo": repo, "reason": "Dieses Release wurde abgelehnt."})
-                                    self._status_row(repo, "skipped", message="Dieses Release wurde abgelehnt.")
-                                    continue
-                                notes = str(asset.get("release_notes") or "")[:16000]
-                                if not notes:
-                                    try:
-                                        notes = await asyncio.to_thread(self._release_notes_from_feed, repo, tag)
-                                    except (OSError, ValueError, urllib.error.URLError) as exc:
-                                        LOG.info("Release-Notes für %s nicht abrufbar: %s", repo, exc)
-                                entry = {"repo": repo, "name": plugin["name"] if plugin else repo.split("/")[-1],
-                                         "installed_version": plugin["version"] if plugin else "",
-                                         "version": tag, "tag": tag, "asset_name": asset["name"],
-                                         "changelog": notes}
-                                async with self.lock:
-                                    self.settings["pending_updates"].append(entry)
-                                    self._save()
-                                self._status_row(repo, "awaiting", version=tag)
-                                continue
-                            self._progress(phase="ZIP herunterladen", percent=int(100 * (position + .25) / total))
-                            self._status_row(repo, "downloading", version=tag)
-                            def download_progress(done, size):
-                                fraction = min(done / size, 1) if size else 0
-                                self._progress(bytes_done=done, bytes_total=size,
-                                               percent=int(100 * (position + .25 + .55 * fraction) / total))
-                            file_path = await asyncio.to_thread(self._download, repo, tag, asset, download_progress)
-                            self._progress(phase="ZIP installieren", percent=int(100 * (position + .85) / total))
-                            self._status_row(repo, "installing")
-                            await self._mark_self_update(repo, tag, plugin)
-                            installed_result = await asyncio.to_thread(self._install_zip, repo, file_path, plugin)
+                            notes = str(asset.get("release_notes") or "")[:16000]
+                            if not notes:
+                                try:
+                                    notes = await asyncio.to_thread(self._release_notes_from_feed, repo, tag)
+                                except (OSError, ValueError, urllib.error.URLError) as exc:
+                                    LOG.info("Release-Notes für %s nicht abrufbar: %s", repo, exc)
+                            entry = {"repo": repo, "name": plugin["name"] if plugin else repo.split("/")[-1],
+                                     "installed_version": plugin["version"] if plugin else "",
+                                     "version": tag, "tag": tag, "asset_name": asset["name"],
+                                     "changelog": notes}
                             async with self.lock:
-                                if is_self_repo(repo):
-                                    self.settings["self_update_inflight"] = {}
-                                if repo in self.settings["repos"]:
-                                    self.settings["downloaded_versions"][repo] = tag
-                                    self.settings["repo_plugin_map"][repo] = installed_result["folder"]
-                                    self.settings["declined_versions"].pop(repo, None)
-                                    self.settings["restart_pending"] = True
-                                    self._save()
-                            installed = [item for item in installed if item["folder"] != installed_result["folder"]]
-                            installed.append({"folder": installed_result["folder"], "name": installed_result["name"],
-                                              "package": "", "repo": repo, "version": installed_result["version"]})
-                            self._status_row(repo, "updated", name=installed_result["name"],
-                                             version=installed_result["version"])
-                            updated.append({"repo": repo, "version": tag, "file": file_path, "folder": installed_result["folder"],
-                                            "installed_version": plugin["version"] if plugin else None})
-                        except AlreadyCurrent as exc:
-                            async with self.lock:
-                                if is_self_repo(repo):
-                                    self.settings["self_update_inflight"] = {}
-                                self.settings["repo_plugin_map"][repo] = exc.folder
+                                self.settings["pending_updates"].append(entry)
                                 self._save()
-                            skipped.append({"repo": repo, "reason": str(exc)})
-                            self._status_row(repo, "current", message=str(exc))
-                        except Exception as exc:
-                            if is_self_repo(repo) and self.settings["self_update_inflight"]:
-                                async with self.lock:
-                                    self.settings["self_update_inflight"] = {}
-                                    self._save()
-                            LOG.warning("Update check failed for %s: %s", repo, exc)
-                            if isinstance(exc, urllib.error.HTTPError):
-                                if exc.code == 404:
-                                    detail = "GitHub-Repository nicht gefunden oder nicht öffentlich."
-                                elif exc.code in (403, 429):
-                                    detail = "GitHub verweigert Release-Seite oder Download (HTTP %s); Verbindung/Netzwerk prüfen." % exc.code
-                                else:
-                                    detail = "GitHub meldet HTTP %s." % exc.code
+                            self._status_row(repo, "awaiting", version=tag)
+                            continue
+                        self._progress(phase="ZIP herunterladen", percent=int(100 * (position + .25) / total))
+                        self._status_row(repo, "downloading", version=tag)
+                        def download_progress(done, size):
+                            fraction = min(done / size, 1) if size else 0
+                            self._progress(bytes_done=done, bytes_total=size,
+                                           percent=int(100 * (position + .25 + .55 * fraction) / total))
+                        file_path = await asyncio.to_thread(self._download, repo, tag, asset, download_progress)
+                        self._progress(phase="ZIP installieren", percent=int(100 * (position + .85) / total))
+                        self._status_row(repo, "installing")
+                        await self._mark_self_update(repo, tag, plugin, asset["name"])
+                        installed_result = await asyncio.to_thread(self._install_zip, repo, file_path, plugin)
+                        async with self.lock:
+                            if is_self_repo(repo):
+                                self.settings["self_update_inflight"] = {}
+                            if is_self_repo(repo) or repo in self.settings["repos"]:
+                                self.settings["downloaded_versions"][repo] = tag
+                                self.settings["repo_plugin_map"][repo] = installed_result["folder"]
+                                self.settings["declined_versions"].pop(repo, None)
+                                self.settings["restart_pending"] = True
+                                self._save()
+                        installed = [item for item in installed if item["folder"] != installed_result["folder"]]
+                        installed.append({"folder": installed_result["folder"], "name": installed_result["name"],
+                                          "package": "", "repo": repo, "version": installed_result["version"]})
+                        self._status_row(repo, "updated", name=installed_result["name"],
+                                         version=installed_result["version"])
+                        updated.append({"repo": repo, "version": tag, "file": file_path, "folder": installed_result["folder"],
+                                        "installed_version": plugin["version"] if plugin else None})
+                    except AlreadyCurrent as exc:
+                        async with self.lock:
+                            if is_self_repo(repo):
+                                self.settings["self_update_inflight"] = {}
+                            self.settings["repo_plugin_map"][repo] = exc.folder
+                            self._save()
+                        skipped.append({"repo": repo, "reason": str(exc)})
+                        self._status_row(repo, "current", message=str(exc))
+                    except Exception as exc:
+                        if is_self_repo(repo) and self.settings["self_update_inflight"]:
+                            async with self.lock:
+                                self.settings["self_update_inflight"] = {}
+                                self._save()
+                        LOG.warning("Update check failed for %s: %s", repo, exc)
+                        if isinstance(exc, urllib.error.HTTPError):
+                            if exc.code == 404:
+                                detail = "GitHub-Repository nicht gefunden oder nicht öffentlich."
+                            elif exc.code in (403, 429):
+                                detail = "GitHub verweigert Release-Seite oder Download (HTTP %s); Verbindung/Netzwerk prüfen." % exc.code
                             else:
-                                detail = str(exc)
-                            errors.append({"repo": repo, "error": detail})
-                            self._status_row(repo, "error", message=detail)
-                        finally:
-                            self._progress(percent=int(100 * (position + 1) / max(total, 1)),
-                                           phase="Repository abgeschlossen", bytes_done=0, bytes_total=0)
+                                detail = "GitHub meldet HTTP %s." % exc.code
+                        else:
+                            detail = str(exc)
+                        errors.append({"repo": repo, "error": detail})
+                        self._status_row(repo, "error", message=detail)
+                    finally:
+                        self._progress(percent=int(100 * (position + 1) / max(total, 1)),
+                                       phase="Repository abgeschlossen", bytes_done=0, bytes_total=0)
             finally:
                 finished = time.time()
                 result = {"success": not errors, "updated": updated, "errors": errors, "skipped": skipped,
@@ -1182,6 +1472,7 @@ class Plugin:
                                bytes_done=0, bytes_total=0, completed_at=finished, result=summary)
                 try:
                     async with self.lock:
+                        self.settings["last_self_check"] = finished
                         self.settings["last_check"] = {"rows": [dict(row) for row in self.check_progress["rows"]],
                                                        "completed_at": finished, "result": summary}
                         self._save()
@@ -1197,9 +1488,8 @@ class Plugin:
             pending = next((item for item in self.settings["pending_updates"] if item["repo"] == repo), None)
             if not pending or self.settings["update_mode"] != "ask":
                 return {"success": False, "error": "Keine ausstehende Freigabe für dieses Repository."}
-            sync = await self.import_default_repos_file()
-            if not sync["success"] or repo not in self.settings["repos"]:
-                return {"success": False, "error": "repos.txt fehlt oder enthält dieses Repository nicht mehr."}
+            if repo not in self.settings["repos"]:
+                return {"success": False, "error": "Repository wird nicht mehr überwacht."}
             installed = self._installed_plugins()
             plugin, reason = self._match_installed(repo, installed)
             if reason:
@@ -1227,7 +1517,7 @@ class Plugin:
                 file_path = await asyncio.to_thread(self._download, repo, tag, asset, download_progress)
                 self._progress(phase="ZIP installieren", percent=85)
                 self._status_row(repo, "installing")
-                await self._mark_self_update(repo, tag, plugin)
+                await self._mark_self_update(repo, tag, plugin, asset["name"])
                 installed_result = await asyncio.to_thread(self._install_zip, repo, file_path, plugin)
                 self._status_row(repo, "updated", name=installed_result["name"],
                                  version=installed_result["version"])
@@ -1273,7 +1563,19 @@ class Plugin:
             return {"success": True, "remaining": len(self.settings["pending_updates"]),
                     "restart_scheduled": restart_scheduled}
 
+    async def _initial_self_check(self):
+        if (not self.settings["pending_updates"] and not self.settings["restart_pending"]
+                and time.time() - self.settings["last_self_check"] >= 300):
+            await self.check_updates(self_only=True)
+
     async def _daily_scheduler(self):
+        # Check our own repository shortly after Decky loads. Throttle
+        # reloads to avoid repeatedly hitting GitHub on Steam UI restarts.
+        await asyncio.sleep(20)
+        try:
+            await self._initial_self_check()
+        except Exception:
+            LOG.exception("Initial self-update check failed")
         while True:
             await asyncio.sleep(24 * 60 * 60)
             try:

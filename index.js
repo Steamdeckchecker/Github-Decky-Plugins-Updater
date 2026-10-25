@@ -85,8 +85,8 @@ function FaGithub (props) {
   return GenIcon({"attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"},"child":[]}]})(props);
 }function FaMinusCircle (props) {
   return GenIcon({"attr":{"viewBox":"0 0 512 512"},"child":[{"tag":"path","attr":{"d":"M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zM124 296c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h264c6.6 0 12 5.4 12 12v56c0 6.6-5.4 12-12 12H124z"},"child":[]}]})(props);
-}function FaFileUpload (props) {
-  return GenIcon({"attr":{"viewBox":"0 0 384 512"},"child":[{"tag":"path","attr":{"d":"M224 136V0H24C10.7 0 0 10.7 0 24v464c0 13.3 10.7 24 24 24h336c13.3 0 24-10.7 24-24V160H248c-13.2 0-24-10.8-24-24zm65.18 216.01H224v80c0 8.84-7.16 16-16 16h-32c-8.84 0-16-7.16-16-16v-80H94.82c-14.28 0-21.41-17.29-11.27-27.36l96.42-95.7c6.65-6.61 17.39-6.61 24.04 0l96.42 95.7c10.15 10.07 3.03 27.36-11.25 27.36zM377 105L279.1 7c-4.5-4.5-10.6-7-17-7H256v128h128v-6.1c0-6.3-2.5-12.4-7-16.9z"},"child":[]}]})(props);
+}function FaGlobe (props) {
+  return GenIcon({"attr":{"viewBox":"0 0 496 512"},"child":[{"tag":"path","attr":{"d":"M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z"},"child":[]}]})(props);
 }function FaExclamationTriangle (props) {
   return GenIcon({"attr":{"viewBox":"0 0 576 512"},"child":[{"tag":"path","attr":{"d":"M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"},"child":[]}]})(props);
 }function FaDownload (props) {
@@ -102,14 +102,13 @@ function FaGithub (props) {
 }
 
 const en = {
+    appTitle: "GitHub Updates",
+    languageLabel: "Language", languageAuto: "Automatic from Steam", languageName: "English",
     disconnected: "Backend unavailable", unknownBackend: "Unknown backend version",
-    timeout: "Decky backend did not respond within 12 seconds.", missingFile: "repos.txt is missing. Checked:",
+    timeout: "Decky backend did not respond within 12 seconds.",
     repoNotFound: "GitHub repository not found or not public.",
     error: "Error", updatedList: "Repository list updated", saved: "Saved",
-    added: "{count} added, {invalid} invalid lines.", importDone: "Import complete",
-    imported: "{count} repositories added", searchingFile: "Searching Downloads for repos.txt…",
-    fileReadError: "Unable to read repos.txt", importInfo: "repos.txt is read at startup and before each check.",
-    fileResult: "{count} repositories from {file} · {invalid} invalid lines.",
+    added: "{count} added, {invalid} invalid lines.",
     noCheck: "No check performed yet", checkingReleases: "Checking GitHub releases…",
     finished: "{updated} installed · {skipped} skipped · {errors} errors · {pending} awaiting approval",
     finishedToast: "Check complete", restartSoon: "Steam UI will restart shortly",
@@ -119,15 +118,14 @@ const en = {
     checkFailed: "Check failed", checking: "Checking…", check: "Check for updates",
     updates: "Updates", reposBadge: "{count} repos", phaseStatus: "{index}/{total} · {phase}{transferred} · {elapsed}s",
     lastCheck: "Last check: {date}", runningRepo: "Checking {repo}",
-    noRepos: "No repositories loaded. Add repos.txt to Downloads.",
+    noRepos: "No repositories followed. Add plugins from the catalog.",
     autoRestart: "New versions are installed. Afterward, the Steam UI restarts.",
     allRows: "Show all {count}", fewerRows: "Show fewer", allErrors: "Show all {count} errors",
-    hideErrors: "Hide errors", repositories: "Repositories from repos.txt ({count})",
+    hideErrors: "Hide errors", repositories: "Followed repositories ({count})",
     showList: "Show list", closeList: "Close list", refreshInstalled: "Refresh installations",
     installedVersion: "{name} · installed: {version}", missing: "Not installed · newest version will be installed",
     assign: "Assign", pluginFor: "Installed plugin for {repo}", saveAssignment: "Save assignment",
-    import: "Import", close: "Close", openFile: "Open repos.txt", reloadFile: "Reload repos.txt",
-    settings: "Settings", modeTitle: "Installation mode", automatic: "Install automatically",
+    settings: "Settings", storageLabel: "Repository storage", storageInfo: "Stored in Decky settings", modeTitle: "Installation mode", automatic: "Install automatically",
     ask: "Ask before installing", autoDescription: "Install new versions without confirmation and restart Steam afterward.",
     askDescription: "Review each changelog and choose Yes or No. Steam restarts after all decisions.",
     modeSaved: "Installation mode saved", approvalTitle: "Updates awaiting approval ({count})",
@@ -145,11 +143,11 @@ const en = {
     selfMissing: "Updater installation not found.", noRelease: "No release ZIP found.",
     invalidVersion: "Installed version cannot be compared.", unknownVersion: "Release version could not be determined.",
     declinedRow: "This release was declined.", removedRow: "Repository removed from list.",
-    phaseFile: "Reading repos.txt", phaseRelease: "Checking release", phaseDownload: "Downloading ZIP",
+    phaseFile: "Loading repository list", phaseRelease: "Checking release", phaseDownload: "Downloading ZIP",
     phaseInstall: "Installing ZIP", phaseCompleteRepo: "Repository complete", phaseComplete: "Check complete",
     progress: "Update progress", awaitingBadge: "{count} awaiting approval",
     browsePlugins: "Browse Decky Plugins", catalogTitle: "Browse Decky Plugins", catalogBack: "Back",
-    catalogIntro: "Find a plugin and add its GitHub repository to repos.txt. The next update check will consider it.",
+    catalogIntro: "Find a plugin and add its GitHub repository to the Updater. The next check will consider it.",
     catalogSearch: "Search plugins, authors or tags", catalogStars: "Most stars", catalogDownloads: "Most downloads",
     catalogRecent: "Latest release", catalogName: "Name A–Z", catalogAllTags: "All tags",
     catalogSort: "Sort by", catalogTags: "Filter by tag",
@@ -162,18 +160,39 @@ const en = {
     catalogPage: "Page {page} of {pages}",
     catalogNote: "Independent, unvetted index. Follow only repositories you trust; installation requires a valid Decky release ZIP.",
     catalogSource: "Catalog data: Decky Plugin Explorer by Safet Zahirovic ↗",
+    githubSearchTitle: "Search GitHub", githubSearchIntro: "Search GitHub by plugin name, owner/repo or URL. Check the release ZIP before installing.",
+    githubSearchHint: "Plugin name, owner/repo or GitHub URL", githubSearchButton: "Search GitHub",
+    githubSearchResults: "GitHub repositories", githubArchived: "Archived", searchFailed: "GitHub search failed",
+    otherVersions: "Other versions", releaseTitle: "Versions · {repo}", releaseList: "Release ZIPs",
+    releaseIntro: "Choose a ZIP to install. Older versions and prereleases may replace an installed plugin.",
+    releaseFailed: "Could not load releases", prerelease: "Prerelease", selectedTitle: "Confirm installation",
+    selectedConfirm: "Install {version}?", selectedCancel: "No, cancel", selectedInstall: "Select version",
+    selectedReplace: "Installed: {version}. This choice may replace it with an older version.",
+    selectedNew: "This version will be installed as a new plugin and added to your followed repositories.",
+    selectedInstalled: "Installed: {version}", pinnedVersion: "Selected version: {version} · automatic updates paused",
+    followLatest: "Follow latest version",
+    installedPlugins: "Installed plugins ({count})", unknownRepository: "GitHub repository unknown",
+    selfUpdateInfo: "This updater checks its own GitHub releases automatically and installs newer versions, even when 'Ask before installing' is selected. No repository entry is needed.",
+    importTitle: "Import from Downloads", importDescription: "Found {file}. Add its GitHub links to the followed list; existing entries stay unchanged.",
+    importButton: "Import repos.txt", importDone: "Import complete",
+    importSummary: "{added} added · {existing} already present · {invalid} invalid lines",
+    importMissing: "No repos.txt found in a Downloads folder.",
+    importTooLarge: "repos.txt is larger than 128 KB.",
+    importUnreadable: "Could not read repos.txt as a UTF-8 text file.",
+    importTimeout: "Reading repos.txt took too long. Please try again.",
+    importCheckRunning: "Wait for the current update check before importing.",
+    importSaveFailed: "Could not save the imported repositories.",
 };
 const messages = {
     en,
     de: {
+        appTitle: "GitHub-Updates",
+        languageLabel: "Sprache", languageAuto: "Automatisch aus Steam", languageName: "Deutsch",
         disconnected: "Keine Backend-Verbindung", unknownBackend: "Backend-Version unbekannt",
-        timeout: "Keine Antwort vom Decky-Backend nach 12 Sekunden.", missingFile: "repos.txt fehlt. Geprüft:",
+        timeout: "Keine Antwort vom Decky-Backend nach 12 Sekunden.",
         repoNotFound: "GitHub-Repository nicht gefunden oder nicht öffentlich.",
         error: "Fehler", updatedList: "Repository-Liste aktualisiert", saved: "Gespeichert",
-        added: "{count} hinzugefügt, {invalid} ungültige Zeilen.", importDone: "Import abgeschlossen",
-        imported: "{count} Repositories hinzugefügt", searchingFile: "Suche repos.txt in Downloads …",
-        fileReadError: "repos.txt konnte nicht gelesen werden", importInfo: "repos.txt wird beim Start und vor jeder Prüfung eingelesen.",
-        fileResult: "{count} Repositories aus {file} · {invalid} ungültige Zeilen.",
+        added: "{count} hinzugefügt, {invalid} ungültige Zeilen.",
         noCheck: "Noch keine Prüfung durchgeführt", checkingReleases: "GitHub-Releases werden geprüft …",
         finished: "{updated} installiert · {skipped} übersprungen · {errors} Fehler · {pending} zur Freigabe",
         finishedToast: "Prüfung abgeschlossen", restartSoon: "Steam-Oberfläche startet gleich neu",
@@ -183,15 +202,14 @@ const messages = {
         checkFailed: "Prüfung fehlgeschlagen", checking: "Prüfe …", check: "Updates prüfen",
         updates: "Updates", reposBadge: "{count} Repos", phaseStatus: "{index}/{total} · {phase}{transferred} · {elapsed}s",
         lastCheck: "Letzte Prüfung: {date}", runningRepo: "Prüfe {repo}",
-        noRepos: "Keine Repositories geladen. Lege repos.txt in Downloads ab.",
+        noRepos: "Keine Repositories abonniert. Füge Plugins über den Katalog hinzu.",
         autoRestart: "Neue Versionen werden installiert. Danach startet die Steam-Oberfläche neu.",
         allRows: "Alle {count} anzeigen", fewerRows: "Weniger anzeigen", allErrors: "Alle {count} Fehler anzeigen",
-        hideErrors: "Fehler einklappen", repositories: "Repositories aus repos.txt ({count})",
+        hideErrors: "Fehler einklappen", repositories: "Überwachte Repositories ({count})",
         showList: "Liste anzeigen", closeList: "Liste schließen", refreshInstalled: "Installationen aktualisieren",
         installedVersion: "{name} · installiert: {version}", missing: "Nicht installiert · neueste Version wird installiert",
         assign: "Zuordnen", pluginFor: "Installiertes Plugin für {repo}", saveAssignment: "Zuordnung speichern",
-        import: "Import", close: "Schließen", openFile: "repos.txt öffnen", reloadFile: "repos.txt neu einlesen",
-        settings: "Einstellungen", modeTitle: "Installationsmodus", automatic: "Immer installieren",
+        settings: "Einstellungen", storageLabel: "Repository-Speicher", storageInfo: "In Decky-Einstellungen gespeichert", modeTitle: "Installationsmodus", automatic: "Immer installieren",
         ask: "Vor Installation fragen", autoDescription: "Neue Versionen ohne Nachfrage installieren und danach Steam neu starten.",
         askDescription: "Jeden Changelog lesen und Ja oder Nein wählen. Steam startet erst nach allen Entscheidungen neu.",
         modeSaved: "Installationsmodus gespeichert", approvalTitle: "Updates zur Freigabe ({count})",
@@ -209,11 +227,11 @@ const messages = {
         selfMissing: "Updater-Installation nicht gefunden.", noRelease: "Keine Release-ZIP gefunden.",
         invalidVersion: "Installierte Version nicht vergleichbar.", unknownVersion: "Release-Version nicht erkennbar.",
         declinedRow: "Dieses Release wurde abgelehnt.", removedRow: "Repository aus der Liste entfernt.",
-        phaseFile: "repos.txt einlesen", phaseRelease: "Release prüfen", phaseDownload: "ZIP herunterladen",
+        phaseFile: "Repository-Liste laden", phaseRelease: "Release prüfen", phaseDownload: "ZIP herunterladen",
         phaseInstall: "ZIP installieren", phaseCompleteRepo: "Repository abgeschlossen", phaseComplete: "Prüfung abgeschlossen",
         progress: "Update-Fortschritt", awaitingBadge: "{count} zur Freigabe",
         browsePlugins: "Decky-Plugins durchsuchen", catalogTitle: "Decky-Plugins durchsuchen", catalogBack: "Zurück",
-        catalogIntro: "Plugin suchen und sein GitHub-Repository zu repos.txt hinzufügen. Es wird bei der nächsten Update-Prüfung berücksichtigt.",
+        catalogIntro: "Plugin suchen und sein GitHub-Repository zum Updater hinzufügen. Es wird bei der nächsten Prüfung berücksichtigt.",
         catalogSearch: "Plugins, Autoren oder Tags suchen", catalogStars: "Meiste Sterne", catalogDownloads: "Meiste Downloads",
         catalogRecent: "Neuestes Release", catalogName: "Name A–Z", catalogAllTags: "Alle Tags",
         catalogSort: "Sortieren nach", catalogTags: "Nach Tag filtern",
@@ -226,16 +244,37 @@ const messages = {
         catalogPage: "Seite {page} von {pages}",
         catalogNote: "Unabhängiger, nicht geprüfter Katalog. Überwache nur vertraute Repos; die Installation benötigt eine gültige Decky-Release-ZIP.",
         catalogSource: "Katalogdaten: Decky Plugin Explorer von Safet Zahirovic ↗",
+        githubSearchTitle: "GitHub durchsuchen", githubSearchIntro: "Suche nach Plugin-Name, Owner/Repo oder URL. Prüfe die Release-ZIP vor der Installation.",
+        githubSearchHint: "Plugin-Name, Owner/Repo oder GitHub-URL", githubSearchButton: "Auf GitHub suchen",
+        githubSearchResults: "GitHub-Repositories", githubArchived: "Archiviert", searchFailed: "GitHub-Suche fehlgeschlagen",
+        otherVersions: "Andere Versionen", releaseTitle: "Versionen · {repo}", releaseList: "Release-ZIPs",
+        releaseIntro: "Wähle eine ZIP zur Installation. Ältere Versionen und Vorabversionen können ein installiertes Plugin ersetzen.",
+        releaseFailed: "Releases konnten nicht geladen werden", prerelease: "Vorabversion", selectedTitle: "Installation bestätigen",
+        selectedConfirm: "{version} installieren?", selectedCancel: "Nein, abbrechen", selectedInstall: "Version auswählen",
+        selectedReplace: "Installiert: {version}. Die Auswahl kann eine ältere Version darüber installieren.",
+        selectedNew: "Diese Version wird neu installiert und zu den überwachten Repositories hinzugefügt.",
+        selectedInstalled: "Installiert: {version}", pinnedVersion: "Gewählte Version: {version} · automatische Updates pausiert",
+        followLatest: "Wieder neueste Version verfolgen",
+        installedPlugins: "Installierte Plugins ({count})", unknownRepository: "GitHub-Repository unbekannt",
+        selfUpdateInfo: "Der Updater prüft seine eigenen GitHub-Releases und installiert neuere Versionen automatisch – auch bei „Vor Installation fragen“. Ein Repository-Eintrag ist nicht nötig.",
+        importTitle: "Aus Downloads importieren", importDescription: "Datei gefunden: {file}. Neue GitHub-Links zur internen Liste hinzufügen; vorhandene Einträge bleiben erhalten.",
+        importButton: "repos.txt importieren", importDone: "Import abgeschlossen",
+        importSummary: "{added} hinzugefügt · {existing} bereits vorhanden · {invalid} ungültige Zeilen",
+        importMissing: "Keine repos.txt in einem Downloads-Ordner gefunden.",
+        importTooLarge: "Die repos.txt ist größer als 128 KB.",
+        importUnreadable: "Die repos.txt konnte nicht als UTF-8-Textdatei gelesen werden.",
+        importTimeout: "Das Einlesen der repos.txt dauerte zu lange. Bitte erneut versuchen.",
+        importCheckRunning: "Bitte erst die laufende Update-Prüfung abschließen.",
+        importSaveFailed: "Die importierten Repositories konnten nicht gespeichert werden.",
     },
     es: {
+        appTitle: "Actualizaciones de GitHub",
+        languageLabel: "Idioma", languageAuto: "Automático según Steam", languageName: "Español",
         disconnected: "Backend no disponible", unknownBackend: "Versión del backend desconocida",
-        timeout: "El backend de Decky no respondió en 12 segundos.", missingFile: "Falta repos.txt. Se buscó en:",
+        timeout: "El backend de Decky no respondió en 12 segundos.",
         repoNotFound: "Repositorio de GitHub inexistente o no público.",
         error: "Error", updatedList: "Lista de repositorios actualizada", saved: "Guardado",
-        added: "{count} añadidos, {invalid} líneas no válidas.", importDone: "Importación completada",
-        imported: "{count} repositorios añadidos", searchingFile: "Buscando repos.txt en Descargas…",
-        fileReadError: "No se pudo leer repos.txt", importInfo: "repos.txt se lee al iniciar y antes de cada comprobación.",
-        fileResult: "{count} repositorios de {file} · {invalid} líneas no válidas.",
+        added: "{count} añadidos, {invalid} líneas no válidas.",
         noCheck: "Aún no se ha comprobado", checkingReleases: "Comprobando versiones de GitHub…",
         finished: "{updated} instalados · {skipped} omitidos · {errors} errores · {pending} por aprobar",
         finishedToast: "Comprobación terminada", restartSoon: "La interfaz de Steam se reiniciará pronto",
@@ -245,15 +284,14 @@ const messages = {
         checkFailed: "La comprobación ha fallado", checking: "Comprobando…", check: "Buscar actualizaciones",
         updates: "Actualizaciones", reposBadge: "{count} repos", phaseStatus: "{index}/{total} · {phase}{transferred} · {elapsed}s",
         lastCheck: "Última comprobación: {date}", runningRepo: "Comprobando {repo}",
-        noRepos: "No hay repositorios. Añade repos.txt a Descargas.",
+        noRepos: "No hay repositorios seguidos. Añade plugins desde el catálogo.",
         autoRestart: "Se instalan las nuevas versiones. Después se reinicia la interfaz de Steam.",
         allRows: "Mostrar los {count}", fewerRows: "Mostrar menos", allErrors: "Mostrar los {count} errores",
-        hideErrors: "Ocultar errores", repositories: "Repositorios de repos.txt ({count})",
+        hideErrors: "Ocultar errores", repositories: "Repositorios seguidos ({count})",
         showList: "Mostrar lista", closeList: "Cerrar lista", refreshInstalled: "Actualizar instalaciones",
         installedVersion: "{name} · instalado: {version}", missing: "No instalado · se instalará la última versión",
         assign: "Asignar", pluginFor: "Plugin instalado para {repo}", saveAssignment: "Guardar asignación",
-        import: "Importar", close: "Cerrar", openFile: "Abrir repos.txt", reloadFile: "Volver a leer repos.txt",
-        settings: "Ajustes", modeTitle: "Modo de instalación", automatic: "Instalar siempre",
+        settings: "Ajustes", storageLabel: "Almacenamiento", storageInfo: "Guardado en los ajustes de Decky", modeTitle: "Modo de instalación", automatic: "Instalar siempre",
         ask: "Preguntar antes de instalar", autoDescription: "Instalar nuevas versiones sin confirmar y reiniciar Steam después.",
         askDescription: "Lee los cambios y elige Sí o No. Steam se reinicia después de todas las decisiones.",
         modeSaved: "Modo de instalación guardado", approvalTitle: "Actualizaciones pendientes ({count})",
@@ -271,11 +309,11 @@ const messages = {
         selfMissing: "No se encontró la instalación del actualizador.", noRelease: "No se encontró ningún ZIP de versión.",
         invalidVersion: "No se puede comparar la versión instalada.", unknownVersion: "No se reconoce la versión.",
         declinedRow: "Se rechazó esta versión.", removedRow: "Repositorio eliminado de la lista.",
-        phaseFile: "Leyendo repos.txt", phaseRelease: "Comprobando versión", phaseDownload: "Descargando ZIP",
+        phaseFile: "Cargando repositorios", phaseRelease: "Comprobando versión", phaseDownload: "Descargando ZIP",
         phaseInstall: "Instalando ZIP", phaseCompleteRepo: "Repositorio terminado", phaseComplete: "Comprobación terminada",
         progress: "Progreso de actualización", awaitingBadge: "{count} por aprobar",
         browsePlugins: "Explorar plugins de Decky", catalogTitle: "Explorar plugins de Decky", catalogBack: "Volver",
-        catalogIntro: "Busca un plugin y añade su repositorio de GitHub a repos.txt. Se tendrá en cuenta en la próxima comprobación.",
+        catalogIntro: "Busca un plugin y añade su repositorio de GitHub al actualizador. Se tendrá en cuenta en la próxima comprobación.",
         catalogSearch: "Buscar plugins, autores o etiquetas", catalogStars: "Más estrellas", catalogDownloads: "Más descargas",
         catalogRecent: "Última versión", catalogName: "Nombre A–Z", catalogAllTags: "Todas las etiquetas",
         catalogSort: "Ordenar por", catalogTags: "Filtrar por etiqueta",
@@ -288,16 +326,37 @@ const messages = {
         catalogPage: "Página {page} de {pages}",
         catalogNote: "Índice independiente sin verificar. Sigue solo repositorios de confianza; se necesita un ZIP válido de Decky para instalar.",
         catalogSource: "Datos: Decky Plugin Explorer de Safet Zahirovic ↗",
+        githubSearchTitle: "Buscar en GitHub", githubSearchIntro: "Busca por nombre del plugin, owner/repo o URL. Revisa el ZIP antes de instalar.",
+        githubSearchHint: "Nombre, owner/repo o URL de GitHub", githubSearchButton: "Buscar en GitHub",
+        githubSearchResults: "Repositorios de GitHub", githubArchived: "Archivado", searchFailed: "Error en la búsqueda de GitHub",
+        otherVersions: "Otras versiones", releaseTitle: "Versiones · {repo}", releaseList: "ZIP de versiones",
+        releaseIntro: "Elige un ZIP. Las versiones anteriores o preliminares pueden sustituir al plugin instalado.",
+        releaseFailed: "No se pudieron cargar las versiones", prerelease: "Versión preliminar", selectedTitle: "Confirmar instalación",
+        selectedConfirm: "¿Instalar {version}?", selectedCancel: "No, cancelar", selectedInstall: "Elegir versión",
+        selectedReplace: "Instalado: {version}. Esta elección puede sustituirlo por una versión anterior.",
+        selectedNew: "Esta versión se instalará y añadirá a los repositorios seguidos.",
+        selectedInstalled: "Instalado: {version}", pinnedVersion: "Versión elegida: {version} · actualizaciones automáticas en pausa",
+        followLatest: "Seguir la última versión",
+        installedPlugins: "Plugins instalados ({count})", unknownRepository: "Repositorio de GitHub desconocido",
+        selfUpdateInfo: "El Updater comprueba e instala automáticamente sus nuevas versiones, incluso con «Preguntar antes de instalar». No hace falta añadir su repositorio.",
+        importTitle: "Importar desde Descargas", importDescription: "Archivo encontrado: {file}. Añade sus enlaces de GitHub a la lista sin cambiar las entradas existentes.",
+        importButton: "Importar repos.txt", importDone: "Importación completada",
+        importSummary: "{added} añadidos · {existing} ya existentes · {invalid} líneas no válidas",
+        importMissing: "No se encontró repos.txt en Descargas.",
+        importTooLarge: "repos.txt supera los 128 KB.",
+        importUnreadable: "No se pudo leer repos.txt como archivo de texto UTF-8.",
+        importTimeout: "La lectura de repos.txt tardó demasiado. Inténtalo de nuevo.",
+        importCheckRunning: "Espera a que termine la comprobación de actualizaciones.",
+        importSaveFailed: "No se pudieron guardar los repositorios importados.",
     },
     fr: {
+        appTitle: "Mises à jour GitHub",
+        languageLabel: "Langue", languageAuto: "Automatique selon Steam", languageName: "Français",
         disconnected: "Backend indisponible", unknownBackend: "Version du backend inconnue",
-        timeout: "Aucune réponse du backend Decky après 12 secondes.", missingFile: "repos.txt introuvable. Dossiers vérifiés :",
+        timeout: "Aucune réponse du backend Decky après 12 secondes.",
         repoNotFound: "Dépôt GitHub introuvable ou non public.",
         error: "Erreur", updatedList: "Liste des dépôts mise à jour", saved: "Enregistré",
-        added: "{count} ajoutés, {invalid} lignes invalides.", importDone: "Importation terminée",
-        imported: "{count} dépôts ajoutés", searchingFile: "Recherche de repos.txt dans Téléchargements…",
-        fileReadError: "Impossible de lire repos.txt", importInfo: "repos.txt est lu au démarrage et avant chaque vérification.",
-        fileResult: "{count} dépôts depuis {file} · {invalid} lignes invalides.",
+        added: "{count} ajoutés, {invalid} lignes invalides.",
         noCheck: "Aucune vérification effectuée", checkingReleases: "Vérification des versions GitHub…",
         finished: "{updated} installés · {skipped} ignorés · {errors} erreurs · {pending} à approuver",
         finishedToast: "Vérification terminée", restartSoon: "L'interface Steam va redémarrer",
@@ -307,15 +366,14 @@ const messages = {
         checkFailed: "Échec de la vérification", checking: "Vérification…", check: "Vérifier les mises à jour",
         updates: "Mises à jour", reposBadge: "{count} dépôts", phaseStatus: "{index}/{total} · {phase}{transferred} · {elapsed}s",
         lastCheck: "Dernière vérification : {date}", runningRepo: "Vérification de {repo}",
-        noRepos: "Aucun dépôt chargé. Ajoutez repos.txt dans Téléchargements.",
+        noRepos: "Aucun dépôt suivi. Ajoutez des plugins depuis le catalogue.",
         autoRestart: "Les nouvelles versions sont installées. L'interface Steam redémarre ensuite.",
         allRows: "Afficher les {count}", fewerRows: "Afficher moins", allErrors: "Afficher les {count} erreurs",
-        hideErrors: "Masquer les erreurs", repositories: "Dépôts de repos.txt ({count})",
+        hideErrors: "Masquer les erreurs", repositories: "Dépôts suivis ({count})",
         showList: "Afficher la liste", closeList: "Fermer la liste", refreshInstalled: "Actualiser les installations",
         installedVersion: "{name} · installé : {version}", missing: "Non installé · dernière version à installer",
         assign: "Associer", pluginFor: "Plugin installé pour {repo}", saveAssignment: "Enregistrer l'association",
-        import: "Importer", close: "Fermer", openFile: "Ouvrir repos.txt", reloadFile: "Relire repos.txt",
-        settings: "Paramètres", modeTitle: "Mode d'installation", automatic: "Toujours installer",
+        settings: "Paramètres", storageLabel: "Stockage des dépôts", storageInfo: "Enregistré dans les paramètres Decky", modeTitle: "Mode d'installation", automatic: "Toujours installer",
         ask: "Demander avant installation", autoDescription: "Installer sans confirmation et redémarrer Steam ensuite.",
         askDescription: "Lire les changements puis choisir Oui ou Non. Steam redémarre après toutes les décisions.",
         modeSaved: "Mode d'installation enregistré", approvalTitle: "Mises à jour à approuver ({count})",
@@ -333,11 +391,11 @@ const messages = {
         selfMissing: "Installation de l'outil introuvable.", noRelease: "Aucun ZIP de version trouvé.",
         invalidVersion: "Version installée non comparable.", unknownVersion: "Version de la publication introuvable.",
         declinedRow: "Cette version a été refusée.", removedRow: "Dépôt supprimé de la liste.",
-        phaseFile: "Lecture de repos.txt", phaseRelease: "Vérification de version", phaseDownload: "Téléchargement du ZIP",
+        phaseFile: "Chargement des dépôts", phaseRelease: "Vérification de version", phaseDownload: "Téléchargement du ZIP",
         phaseInstall: "Installation du ZIP", phaseCompleteRepo: "Dépôt terminé", phaseComplete: "Vérification terminée",
         progress: "Progression de la mise à jour", awaitingBadge: "{count} à approuver",
         browsePlugins: "Parcourir les plugins Decky", catalogTitle: "Parcourir les plugins Decky", catalogBack: "Retour",
-        catalogIntro: "Cherchez un plugin et ajoutez son dépôt GitHub à repos.txt. Il sera pris en compte lors de la prochaine vérification.",
+        catalogIntro: "Cherchez un plugin et ajoutez son dépôt GitHub à l'Updater. Il sera pris en compte lors de la prochaine vérification.",
         catalogSearch: "Rechercher plugins, auteurs ou tags", catalogStars: "Plus d'étoiles", catalogDownloads: "Plus de téléchargements",
         catalogRecent: "Dernière version", catalogName: "Nom A–Z", catalogAllTags: "Tous les tags",
         catalogSort: "Trier par", catalogTags: "Filtrer par tag",
@@ -350,16 +408,37 @@ const messages = {
         catalogPage: "Page {page} sur {pages}",
         catalogNote: "Index indépendant non vérifié. N'utilisez que des dépôts fiables ; un ZIP Decky valide est requis pour installer.",
         catalogSource: "Données : Decky Plugin Explorer par Safet Zahirovic ↗",
+        githubSearchTitle: "Rechercher sur GitHub", githubSearchIntro: "Recherchez par nom, owner/repo ou URL. Vérifiez le ZIP avant installation.",
+        githubSearchHint: "Nom, owner/repo ou URL GitHub", githubSearchButton: "Rechercher sur GitHub",
+        githubSearchResults: "Dépôts GitHub", githubArchived: "Archivé", searchFailed: "Recherche GitHub échouée",
+        otherVersions: "Autres versions", releaseTitle: "Versions · {repo}", releaseList: "ZIP des versions",
+        releaseIntro: "Choisissez un ZIP. Les versions précédentes ou préliminaires peuvent remplacer le plugin installé.",
+        releaseFailed: "Impossible de charger les versions", prerelease: "Version préliminaire", selectedTitle: "Confirmer l'installation",
+        selectedConfirm: "Installer {version} ?", selectedCancel: "Non, annuler", selectedInstall: "Choisir la version",
+        selectedReplace: "Installée : {version}. Cette version peut la remplacer par une version précédente.",
+        selectedNew: "Cette version sera installée et ajoutée aux dépôts suivis.",
+        selectedInstalled: "Installée : {version}", pinnedVersion: "Version choisie : {version} · mises à jour automatiques suspendues",
+        followLatest: "Suivre la dernière version",
+        installedPlugins: "Plugins installés ({count})", unknownRepository: "Dépôt GitHub inconnu",
+        selfUpdateInfo: "L'Updater vérifie et installe automatiquement ses nouvelles versions, même avec « Demander avant installation ». Aucun dépôt à ajouter.",
+        importTitle: "Importer depuis Téléchargements", importDescription: "Fichier trouvé : {file}. Ajouter ses liens GitHub à la liste sans modifier les entrées existantes.",
+        importButton: "Importer repos.txt", importDone: "Importation terminée",
+        importSummary: "{added} ajoutés · {existing} déjà présents · {invalid} lignes invalides",
+        importMissing: "Aucun repos.txt trouvé dans Téléchargements.",
+        importTooLarge: "repos.txt dépasse 128 Ko.",
+        importUnreadable: "Impossible de lire repos.txt comme fichier texte UTF-8.",
+        importTimeout: "La lecture de repos.txt a pris trop de temps. Réessayez.",
+        importCheckRunning: "Attendez la fin de la vérification des mises à jour.",
+        importSaveFailed: "Impossible d'enregistrer les dépôts importés.",
     },
     ru: {
+        appTitle: "Обновления GitHub",
+        languageLabel: "Язык", languageAuto: "Автоматически по настройкам Steam", languageName: "Русский",
         disconnected: "Нет связи с серверной частью", unknownBackend: "Версия серверной части неизвестна",
-        timeout: "Серверная часть Decky не ответила за 12 секунд.", missingFile: "Файл repos.txt не найден. Проверены:",
+        timeout: "Серверная часть Decky не ответила за 12 секунд.",
         repoNotFound: "Репозиторий GitHub не найден или не является публичным.",
         error: "Ошибка", updatedList: "Список репозиториев обновлён", saved: "Сохранено",
-        added: "Добавлено: {count}, неверных строк: {invalid}.", importDone: "Импорт завершён",
-        imported: "Добавлено репозиториев: {count}", searchingFile: "Поиск repos.txt в Загрузках…",
-        fileReadError: "Не удалось прочитать repos.txt", importInfo: "repos.txt читается при запуске и перед каждой проверкой.",
-        fileResult: "Репозиториев из {file}: {count} · неверных строк: {invalid}.",
+        added: "Добавлено: {count}, неверных строк: {invalid}.",
         noCheck: "Проверка ещё не выполнялась", checkingReleases: "Проверка релизов GitHub…",
         finished: "Установлено: {updated} · пропущено: {skipped} · ошибок: {errors} · ожидают: {pending}",
         finishedToast: "Проверка завершена", restartSoon: "Интерфейс Steam скоро перезапустится",
@@ -369,15 +448,14 @@ const messages = {
         checkFailed: "Ошибка проверки", checking: "Проверка…", check: "Проверить обновления",
         updates: "Обновления", reposBadge: "Репозиториев: {count}", phaseStatus: "{index}/{total} · {phase}{transferred} · {elapsed} с",
         lastCheck: "Последняя проверка: {date}", runningRepo: "Проверяется {repo}",
-        noRepos: "Нет репозиториев. Добавьте repos.txt в папку Загрузки.",
+        noRepos: "Нет отслеживаемых репозиториев. Добавьте плагины из каталога.",
         autoRestart: "Новые версии устанавливаются, затем интерфейс Steam перезапускается.",
         allRows: "Показать все ({count})", fewerRows: "Показать меньше", allErrors: "Показать все ошибки ({count})",
-        hideErrors: "Скрыть ошибки", repositories: "Репозитории из repos.txt ({count})",
+        hideErrors: "Скрыть ошибки", repositories: "Отслеживаемые репозитории ({count})",
         showList: "Показать список", closeList: "Скрыть список", refreshInstalled: "Обновить список установленных",
         installedVersion: "{name} · установлено: {version}", missing: "Не установлен · будет установлена новая версия",
         assign: "Назначить", pluginFor: "Установленный плагин для {repo}", saveAssignment: "Сохранить назначение",
-        import: "Импорт", close: "Закрыть", openFile: "Открыть repos.txt", reloadFile: "Перечитать repos.txt",
-        settings: "Настройки", modeTitle: "Режим установки", automatic: "Всегда устанавливать",
+        settings: "Настройки", storageLabel: "Хранение репозиториев", storageInfo: "Сохранено в настройках Decky", modeTitle: "Режим установки", automatic: "Всегда устанавливать",
         ask: "Спрашивать перед установкой", autoDescription: "Устанавливать без подтверждения и перезапускать Steam.",
         askDescription: "Прочитайте список изменений и выберите Да или Нет. Steam перезапустится после всех решений.",
         modeSaved: "Режим установки сохранён", approvalTitle: "Ожидают подтверждения ({count})",
@@ -395,11 +473,11 @@ const messages = {
         selfMissing: "Установка этого плагина не найдена.", noRelease: "ZIP-файл релиза не найден.",
         invalidVersion: "Версии нельзя сравнить.", unknownVersion: "Версия релиза неизвестна.",
         declinedRow: "Этот релиз отклонён.", removedRow: "Репозиторий удалён из списка.",
-        phaseFile: "Чтение repos.txt", phaseRelease: "Проверка релиза", phaseDownload: "Загрузка ZIP",
+        phaseFile: "Загрузка списка репозиториев", phaseRelease: "Проверка релиза", phaseDownload: "Загрузка ZIP",
         phaseInstall: "Установка ZIP", phaseCompleteRepo: "Репозиторий обработан", phaseComplete: "Проверка завершена",
         progress: "Ход обновления", awaitingBadge: "Ожидают: {count}",
         browsePlugins: "Каталог плагинов Decky", catalogTitle: "Каталог плагинов Decky", catalogBack: "Назад",
-        catalogIntro: "Найдите плагин и добавьте его репозиторий GitHub в repos.txt. Он будет учтён при следующей проверке.",
+        catalogIntro: "Найдите плагин и добавьте его репозиторий GitHub в Updater. Он будет учтён при следующей проверке.",
         catalogSearch: "Поиск плагинов, авторов и тегов", catalogStars: "Больше звёзд", catalogDownloads: "Больше загрузок",
         catalogRecent: "Свежий выпуск", catalogName: "Имя А–Я", catalogAllTags: "Все теги",
         catalogSort: "Сортировать по", catalogTags: "Фильтр по тегу",
@@ -412,13 +490,35 @@ const messages = {
         catalogPage: "Страница {page} из {pages}",
         catalogNote: "Независимый непроверенный каталог. Используйте только надёжные репозитории; для установки нужен корректный ZIP Decky.",
         catalogSource: "Данные: Decky Plugin Explorer от Safet Zahirovic ↗",
+        githubSearchTitle: "Поиск на GitHub", githubSearchIntro: "Поиск по названию, owner/repo или URL. Проверьте ZIP перед установкой.",
+        githubSearchHint: "Название, owner/repo или URL GitHub", githubSearchButton: "Искать на GitHub",
+        githubSearchResults: "Репозитории GitHub", githubArchived: "В архиве", searchFailed: "Ошибка поиска GitHub",
+        otherVersions: "Другие версии", releaseTitle: "Версии · {repo}", releaseList: "ZIP-файлы релизов",
+        releaseIntro: "Выберите ZIP. Старые или предварительные версии могут заменить установленный плагин.",
+        releaseFailed: "Не удалось загрузить релизы", prerelease: "Предварительная версия", selectedTitle: "Подтвердить установку",
+        selectedConfirm: "Установить {version}?", selectedCancel: "Нет, отменить", selectedInstall: "Выбрать версию",
+        selectedReplace: "Установлено: {version}. Выбор может заменить плагин более старой версией.",
+        selectedNew: "Эта версия будет установлена и добавлена в отслеживаемые репозитории.",
+        selectedInstalled: "Установлено: {version}", pinnedVersion: "Выбранная версия: {version} · автообновления приостановлены",
+        followLatest: "Следить за последней версией",
+        installedPlugins: "Установленные плагины ({count})", unknownRepository: "Репозиторий GitHub неизвестен",
+        selfUpdateInfo: "Updater автоматически проверяет и устанавливает свои новые версии даже в режиме запроса подтверждения. Добавлять его репозиторий не требуется.",
+        importTitle: "Импорт из Загрузок", importDescription: "Найден файл: {file}. Добавить ссылки GitHub в список, сохранив существующие записи.",
+        importButton: "Импортировать repos.txt", importDone: "Импорт завершён",
+        importSummary: "Добавлено: {added} · уже есть: {existing} · неверных строк: {invalid}",
+        importMissing: "Файл repos.txt не найден в папке Загрузки.",
+        importTooLarge: "Размер repos.txt превышает 128 КБ.",
+        importUnreadable: "Не удалось прочитать repos.txt как текст UTF-8.",
+        importTimeout: "Чтение repos.txt заняло слишком много времени. Повторите попытку.",
+        importCheckRunning: "Дождитесь окончания проверки обновлений перед импортом.",
+        importSaveFailed: "Не удалось сохранить импортированные репозитории.",
     },
 };
 function systemLanguage(value) {
-    const code = value.toLowerCase().replace(/[_-].*$/, "");
+    const code = String(value || "").trim().toLowerCase().replace(/[_-].*$/, "");
     if (code === "german" || code === "de")
         return "de";
-    if (code === "spanish" || code === "latamspanish" || code === "latam" || code === "es")
+    if (["spanish", "latamspanish", "spanishlatam", "spanishlatinamerica", "latam", "es"].includes(code))
         return "es";
     if (code === "french" || code === "fr")
         return "fr";
@@ -431,8 +531,8 @@ function t(lang, key, values = {}) {
 }
 
 const getRepos = callable("get_repos");
+const importReposFile = callable("import_repos_file");
 const getCheckStatus = callable("get_check_status");
-const importDefault = callable("import_default_repos_file");
 const startCheck = callable("start_check");
 const setMapping = callable("set_plugin_mapping");
 const setUpdateMode = callable("set_update_mode");
@@ -444,6 +544,12 @@ const reportUiRestartFailure = callable("report_ui_restart_failure");
 const startCatalog = callable("start_catalog");
 const getCatalogStatus = callable("get_catalog_status");
 const setCatalogRepo = callable("set_catalog_repo");
+const startGithubSearch = callable("start_github_search");
+const getGithubSearchStatus = callable("get_github_search_status");
+const startReleaseLookup = callable("start_release_lookup");
+const getReleaseStatus = callable("get_release_status");
+const startSelectedInstall = callable("start_selected_install");
+const clearVersionPin = callable("clear_version_pin");
 // Steam can remount or reload the entire Decky view while opening a modal.
 // Keep the guard across both events so a dismissed popup cannot reopen in a loop.
 const approvalStorageKey = "github-plugin-updater.approvals.v1";
@@ -479,6 +585,51 @@ function withTimeout(request, message, milliseconds = 12000) {
 const small = { fontSize: "0.85em", opacity: 0.8 };
 const spaced = { display: "flex", alignItems: "center", gap: 8 };
 const colors = { cyan: "#45d9f2", green: "#69dda8", red: "#ff9c9c", muted: "#aab9cf" };
+function useSystemLanguage() {
+    const [language, setLanguage] = SP_REACT.useState("en");
+    SP_REACT.useEffect(() => {
+        let active = true;
+        let request = 0;
+        const readLanguage = () => {
+            const current = ++request;
+            if (typeof SteamClient === "undefined" || !SteamClient.Settings?.GetCurrentLanguage) {
+                if (active)
+                    setLanguage("en");
+                return;
+            }
+            try {
+                void SteamClient.Settings.GetCurrentLanguage().then(value => {
+                    if (active && current === request)
+                        setLanguage(systemLanguage(value));
+                }).catch(() => {
+                    if (active && current === request)
+                        setLanguage("en");
+                });
+            }
+            catch {
+                if (active && current === request)
+                    setLanguage("en");
+            }
+        };
+        readLanguage();
+        let listener = null;
+        try {
+            if (typeof SteamClient !== "undefined" && SteamClient.Settings?.RegisterForSettingsChanges) {
+                listener = SteamClient.Settings.RegisterForSettingsChanges(readLanguage);
+            }
+        }
+        catch { /* The current language still works if Steam cannot register a listener. */ }
+        return () => { active = false; try {
+            listener?.unregister();
+        }
+        catch { /* Steam may already be gone. */ } };
+    }, []);
+    return language;
+}
+function LocalizedTitle() {
+    const language = useSystemLanguage();
+    return SP_JSX.jsx("div", { className: DFL.staticClasses.Title, children: t(language, "appTitle") });
+}
 function CheckIcon({ state }) {
     if (state === "updated" || state === "current")
         return SP_JSX.jsx(FaCheckCircle, { color: colors.green, size: 17 });
@@ -493,8 +644,6 @@ function CheckIcon({ state }) {
     return SP_JSX.jsx(FaCircleNotch, { color: colors.cyan, size: 17 });
 }
 function backendMessage(lang, message) {
-    if (message.startsWith("repos.txt fehlt. Geprüft:"))
-        return message.replace("repos.txt fehlt. Geprüft:", t(lang, "missingFile"));
     const reason = {
         "Mehrere passende Installationen; bitte zuordnen.": "ambiguous",
         "Updater-Installation nicht eindeutig gefunden.": "selfMissing",
@@ -504,6 +653,9 @@ function backendMessage(lang, message) {
         "Dieses Release wurde abgelehnt.": "declinedRow",
         "Repository aus der Liste entfernt.": "removedRow",
         "GitHub-Repository nicht gefunden oder nicht öffentlich.": "repoNotFound",
+        repo_import_missing: "importMissing", repo_import_too_large: "importTooLarge",
+        repo_import_unreadable: "importUnreadable", repo_import_timeout: "importTimeout",
+        repo_import_check_running: "importCheckRunning", repo_import_save_failed: "importSaveFailed",
     };
     return reason[message] ? t(lang, reason[message]) : message;
 }
@@ -527,7 +679,7 @@ function rowSubtitle(lang, row) {
     return row.previous ? t(lang, "pendingRow", { version: row.previous }) : t(lang, "notInstalled");
 }
 function phaseName(lang, phase) {
-    const names = { "repos.txt einlesen": "phaseFile", "Release prüfen": "phaseRelease",
+    const names = { "Repository-Liste laden": "phaseFile", "Release prüfen": "phaseRelease",
         "ZIP herunterladen": "phaseDownload", "ZIP installieren": "phaseInstall",
         "Repository abgeschlossen": "phaseCompleteRepo", "Prüfung abgeschlossen": "phaseComplete" };
     return names[phase] ? t(lang, names[phase]) : phase;
@@ -545,7 +697,7 @@ function FilterButton({ children, onClick, selected }) {
             background: selected ? "#15566d" : undefined,
         }, children: [selected ? "✓ " : "", children] });
 }
-function CatalogBrowser({ language, onClose, onReposChanged }) {
+function CatalogBrowser({ language, onClose, onReposChanged, onVersions }) {
     const [plugins, setPlugins] = SP_REACT.useState([]);
     const [tracked, setTracked] = SP_REACT.useState([]);
     const [loading, setLoading] = SP_REACT.useState(true);
@@ -643,44 +795,198 @@ function CatalogBrowser({ language, onClose, onReposChanged }) {
             setChanging("");
         }
     };
-    return SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0,
-            boxSizing: "border-box", padding: "0 3px 8px", color: "#edf5ff", overflowWrap: "anywhere" }, children: [SP_JSX.jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }, children: [SP_JSX.jsx("strong", { style: { fontSize: 17 }, children: t(language, "catalogTitle") }), SP_JSX.jsx(CompactButton, { onClick: onClose, children: t(language, "catalogBack") })] }), SP_JSX.jsx("div", { style: { ...small, margin: "8px 0" }, children: t(language, "catalogIntro") }), SP_JSX.jsx("div", { onKeyDownCapture: event => {
-                    if (event.key === "Enter" && !event.nativeEvent.isComposing) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                }, onKeyUpCapture: event => {
-                    if (event.key === "Enter") {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                }, children: SP_JSX.jsx(DFL.TextField, { label: t(language, "catalogSearch"), value: search, onChange: event => {
-                        setSearch(event.target.value);
-                        setPage(0);
-                    } }) }), SP_JSX.jsx("div", { style: { ...small, margin: "12px 0 5px" }, children: t(language, "catalogSort") }), SP_JSX.jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 }, children: [["stars", "catalogStars"], ["downloads", "catalogDownloads"],
-                    ["recent", "catalogRecent"], ["name", "catalogName"]].map(([choice, label]) => SP_JSX.jsx(FilterButton, { selected: sort === choice, onClick: () => {
-                        setSort(choice);
-                        setPage(0);
-                    }, children: t(language, label) }, choice)) }), SP_JSX.jsx("div", { style: { marginTop: 10 }, children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowTags(value => !value), children: [t(language, "catalogTags"), ": ", tag || t(language, "catalogAllTags"), " ", showTags ? "▴" : "▾"] }) }), showTags && SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, maxHeight: 185,
-                    overflowY: "auto", padding: "7px 2px" }, children: [SP_JSX.jsx(FilterButton, { selected: !tag, onClick: () => {
-                            setTag("");
-                            setPage(0);
-                            setShowTags(false);
-                        }, children: t(language, "catalogAllTags") }), topTags.map(([item, count]) => SP_JSX.jsxs(FilterButton, { selected: tag === item, onClick: () => {
-                            setTag(item);
-                            setPage(0);
-                            setShowTags(false);
-                        }, children: [item, " (", count, ")"] }, item))] }), SP_JSX.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", margin: "10px 0" }, children: [SP_JSX.jsx("span", { style: small, children: t(language, "catalogResults", { count: filtered.length, total: plugins.length }) }), SP_JSX.jsx(CompactButton, { disabled: loading, onClick: () => void loadCatalog(true), children: t(language, "catalogRefresh") })] }), loading && SP_JSX.jsxs("div", { style: { ...small, padding: 8 }, children: [SP_JSX.jsx(FaCircleNotch, {}), " ", t(language, "catalogLoading")] }), error && SP_JSX.jsxs("div", { style: { color: colors.red, fontSize: 12, margin: "8px 0" }, children: [t(language, "catalogFailed"), ": ", error, SP_JSX.jsx("div", { style: { marginTop: 8 }, children: SP_JSX.jsx(CompactButton, { onClick: () => void loadCatalog(true), children: t(language, "catalogRetry") }) })] }), !loading && !error && !filtered.length && SP_JSX.jsx("div", { style: { ...small, padding: 8 }, children: t(language, "catalogEmpty") }), filtered.slice(shownPage * 12, (shownPage + 1) * 12).map(plugin => {
-                const follows = trackedSet.has(plugin.repo.toLowerCase());
-                return SP_JSX.jsxs("div", { style: { padding: "10px 11px", background: "#202e42",
-                        borderRadius: 9, marginTop: 7, minWidth: 0 }, children: [SP_JSX.jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }, children: [SP_JSX.jsx("strong", { style: { fontSize: 13 }, children: plugin.name }), SP_JSX.jsxs("span", { style: { ...small, whiteSpace: "nowrap" }, children: ["\u2605 ", plugin.stars, plugin.downloads > 0
-                                            ? ` · ↓ ${plugin.downloads.toLocaleString(language)}` : ""] })] }), SP_JSX.jsxs("div", { style: { fontSize: 11, color: colors.muted, marginTop: 2 }, children: [plugin.repo, " \u00B7 ", plugin.author] }), plugin.description && SP_JSX.jsx("div", { style: { fontSize: 12, marginTop: 6, lineHeight: 1.35 }, children: plugin.description }), plugin.tags.length > 0 && SP_JSX.jsx("div", { style: { ...small, marginTop: 5 }, children: plugin.tags.slice(0, 4).join(" · ") }), SP_JSX.jsx("div", { style: { ...small, marginTop: 5 }, children: plugin.latest_tag
-                                ? t(language, "catalogRelease", { version: plugin.latest_tag }) : t(language, "catalogNoRelease") }), SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: !!changing || loading, onClick: () => void toggleRepo(plugin.repo, !follows), children: changing === plugin.repo ? t(language, "processing") : t(language, follows ? "catalogRemove" : "catalogAdd") }), SP_JSX.jsx("a", { style: { fontSize: 12, color: colors.cyan }, href: `https://github.com/${plugin.repo}`, target: "_blank", rel: "noopener noreferrer", children: "GitHub \u2197" })] })] }, plugin.repo);
-            }), pageCount > 1 && SP_JSX.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 12 }, children: [SP_JSX.jsx(CompactButton, { disabled: shownPage === 0, onClick: () => setPage(shownPage - 1), children: t(language, "catalogPrev") }), SP_JSX.jsx("span", { style: small, children: t(language, "catalogPage", { page: shownPage + 1, pages: pageCount }) }), SP_JSX.jsx(CompactButton, { disabled: shownPage + 1 >= pageCount, onClick: () => setPage(shownPage + 1), children: t(language, "catalogNext") })] }), SP_JSX.jsx("div", { style: { ...small, marginTop: 12 }, children: t(language, "catalogNote") }), SP_JSX.jsx("a", { style: { fontSize: 11, color: colors.cyan }, href: "https://safetzahirovic.github.io/decky-plugins-explorer/", target: "_blank", rel: "noopener noreferrer", children: t(language, "catalogSource") })] });
+    return SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0, overflowWrap: "anywhere" }, children: [SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "catalogTitle"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: onClose, children: ["\u2190 ", t(language, "catalogBack")] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "catalogIntro") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { onKeyDownCapture: event => {
+                                if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                            }, onKeyUpCapture: event => {
+                                if (event.key === "Enter") {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                            }, children: SP_JSX.jsx(DFL.TextField, { label: t(language, "catalogSearch"), value: search, onChange: event => {
+                                    setSearch(event.target.value);
+                                    setPage(0);
+                                } }) }) }), SP_JSX.jsxs(DFL.PanelSectionRow, { children: [SP_JSX.jsx("div", { style: small, children: t(language, "catalogSort") }), SP_JSX.jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }, children: [["stars", "catalogStars"], ["downloads", "catalogDownloads"],
+                                    ["recent", "catalogRecent"], ["name", "catalogName"]].map(([choice, label]) => SP_JSX.jsx(FilterButton, { selected: sort === choice, onClick: () => {
+                                        setSort(choice);
+                                        setPage(0);
+                                    }, children: t(language, label) }, choice)) })] }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowTags(value => !value), children: [t(language, "catalogTags"), ": ", tag || t(language, "catalogAllTags"), " ", showTags ? "▴" : "▾"] }) }), showTags && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 6,
+                                maxHeight: 185, overflowY: "auto" }, children: [SP_JSX.jsx(FilterButton, { selected: !tag, onClick: () => {
+                                        setTag("");
+                                        setPage(0);
+                                        setShowTags(false);
+                                    }, children: t(language, "catalogAllTags") }), topTags.map(([item, count]) => SP_JSX.jsxs(FilterButton, { selected: tag === item, onClick: () => {
+                                        setTag(item);
+                                        setPage(0);
+                                        setShowTags(false);
+                                    }, children: [item, " (", count, ")"] }, item))] }) })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "catalogResults", { count: filtered.length, total: plugins.length }), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { disabled: loading, onClick: () => void loadCatalog(true), children: t(language, "catalogRefresh") }) }), loading && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: small, children: [SP_JSX.jsx(FaCircleNotch, {}), " ", t(language, "catalogLoading")] }) }), error && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { color: colors.red, fontSize: 12 }, children: [t(language, "catalogFailed"), ": ", error, SP_JSX.jsx("div", { style: { marginTop: 8 }, children: SP_JSX.jsx(CompactButton, { onClick: () => void loadCatalog(true), children: t(language, "catalogRetry") }) })] }) }), !loading && !error && !filtered.length && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "catalogEmpty") }) }), filtered.slice(shownPage * 12, (shownPage + 1) * 12).map(plugin => {
+                        const follows = trackedSet.has(plugin.repo.toLowerCase());
+                        return SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(DFL.Field, { label: plugin.name, icon: SP_JSX.jsx(FaGithub, {}), description: `${plugin.repo} · ${plugin.author}`, padding: "compact", childrenLayout: "below", bottomSeparator: "standard", children: [plugin.description && SP_JSX.jsx("div", { style: { fontSize: 12, lineHeight: 1.35, opacity: 0.82,
+                                            display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }, children: plugin.description }), SP_JSX.jsxs("div", { style: { ...small, marginTop: 5 }, children: ["\u2605 ", plugin.stars, plugin.downloads > 0
+                                                ? ` · ↓ ${plugin.downloads.toLocaleString(language)}` : "", " \u00B7 ", plugin.latest_tag
+                                                ? t(language, "catalogRelease", { version: plugin.latest_tag }) : t(language, "catalogNoRelease")] }), plugin.tags.length > 0 && SP_JSX.jsx("div", { style: { ...small, marginTop: 4 }, children: plugin.tags.slice(0, 4).join(" · ") }), SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: !!changing || loading, onClick: () => void toggleRepo(plugin.repo, !follows), children: changing === plugin.repo ? t(language, "processing") : t(language, follows ? "catalogRemove" : "catalogAdd") }), SP_JSX.jsx(CompactButton, { onClick: () => onVersions(plugin.repo), children: t(language, "otherVersions") }), SP_JSX.jsx("a", { href: `https://github.com/${plugin.repo}`, target: "_blank", rel: "noopener noreferrer", children: "GitHub \u2197" })] })] }) }, plugin.repo);
+                    }), pageCount > 1 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { display: "flex", alignItems: "center",
+                                flexWrap: "wrap", gap: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: shownPage === 0, onClick: () => setPage(shownPage - 1), children: t(language, "catalogPrev") }), SP_JSX.jsx("span", { style: small, children: t(language, "catalogPage", { page: shownPage + 1, pages: pageCount }) }), SP_JSX.jsx(CompactButton, { disabled: shownPage + 1 >= pageCount, onClick: () => setPage(shownPage + 1), children: t(language, "catalogNext") })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "catalogNote") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("a", { href: "https://safetzahirovic.github.io/decky-plugins-explorer/", target: "_blank", rel: "noopener noreferrer", children: t(language, "catalogSource") }) })] })] });
+}
+function GithubSearch({ language, onClose, onVersions, onReposChanged }) {
+    const [query, setQuery] = SP_REACT.useState("");
+    const [status, setStatus] = SP_REACT.useState(null);
+    const [changing, setChanging] = SP_REACT.useState("");
+    const [error, setError] = SP_REACT.useState("");
+    const active = SP_REACT.useRef(true);
+    const read = async () => {
+        try {
+            const next = await withTimeout(getGithubSearchStatus(), t(language, "timeout"));
+            if (active.current) {
+                setStatus(next);
+                setError("");
+            }
+        }
+        catch (caught) {
+            if (active.current)
+                setError(String(caught));
+        }
+    };
+    SP_REACT.useEffect(() => {
+        active.current = true;
+        void getGithubSearchStatus().then(next => {
+            if (active.current) {
+                setStatus(next);
+                setQuery(next.query || "");
+            }
+        });
+        const timer = window.setInterval(() => void read(), 1000);
+        return () => { active.current = false; window.clearInterval(timer); };
+    }, []);
+    const search = async (page = 1) => {
+        if (!query.trim())
+            return;
+        setError("");
+        setStatus(previous => ({ running: true, query: query.trim(), page, plugins: [],
+            tracked: previous?.tracked || [], has_more: false, error: "" }));
+        try {
+            const result = await withTimeout(startGithubSearch(query.trim(), page), t(language, "timeout"));
+            if (!result.success)
+                throw new Error(result.error || t(language, "searchFailed"));
+            await read();
+        }
+        catch (caught) {
+            setError(String(caught));
+        }
+    };
+    const toggle = async (repo, follow) => {
+        setChanging(repo);
+        try {
+            const result = await withTimeout(setCatalogRepo(repo, follow), t(language, "timeout"));
+            if (!result.success)
+                throw new Error(result.error || t(language, "actionFailed"));
+            setStatus(previous => previous ? { ...previous, tracked: result.repos || [] } : previous);
+            onReposChanged();
+        }
+        catch (caught) {
+            toaster.toast({ title: t(language, "error"), body: String(caught) });
+        }
+        finally {
+            setChanging("");
+        }
+    };
+    const tracked = new Set((status?.tracked || []).map(repo => repo.toLowerCase()));
+    return SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0, overflowWrap: "anywhere" }, children: [SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "githubSearchTitle"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: onClose, children: ["\u2190 ", t(language, "catalogBack")] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "githubSearchIntro") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { onKeyDownCapture: event => {
+                                if (event.key === "Enter" && !event.nativeEvent.isComposing) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                            }, onKeyUpCapture: event => {
+                                if (event.key === "Enter") {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+                            }, children: SP_JSX.jsx(DFL.TextField, { label: t(language, "githubSearchHint"), value: query, onChange: event => setQuery(event.target.value) }) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: !query.trim() || !!status?.running, onClick: () => void search(1), children: [SP_JSX.jsx(FaSearch, {}), " ", t(language, "githubSearchButton")] }) }), (error || status?.error) && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { color: colors.red, fontSize: 12 }, children: error || status?.error }) })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "githubSearchResults"), children: [status?.running && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: small, children: [SP_JSX.jsx(FaCircleNotch, {}), " ", t(language, "catalogLoading")] }) }), !status?.running && !!status?.query && !status?.plugins.length && !status?.error &&
+                        SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "catalogEmpty") }) }), status?.plugins.map(plugin => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(DFL.Field, { label: plugin.name, icon: SP_JSX.jsx(FaGithub, {}), description: plugin.repo, padding: "compact", childrenLayout: "below", bottomSeparator: "standard", children: [plugin.description && SP_JSX.jsx("div", { style: { ...small, marginTop: 6 }, children: plugin.description }), SP_JSX.jsxs("div", { style: { ...small, marginTop: 5 }, children: ["\u2605 ", plugin.stars, " \u00B7 ", plugin.author, plugin.archived ? ` · ${t(language, "githubArchived")}` : ""] }), SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: !!changing, onClick: () => void toggle(plugin.repo, !tracked.has(plugin.repo.toLowerCase())), children: changing === plugin.repo ? t(language, "processing") : t(language, tracked.has(plugin.repo.toLowerCase()) ? "catalogRemove" : "catalogAdd") }), SP_JSX.jsx(CompactButton, { onClick: () => onVersions(plugin.repo), children: t(language, "otherVersions") }), SP_JSX.jsx("a", { href: `https://github.com/${plugin.repo}`, target: "_blank", rel: "noopener noreferrer", children: "GitHub \u2197" })] })] }) }, plugin.repo)), !!status?.plugins.length && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { display: "flex", gap: 8, alignItems: "center" }, children: [SP_JSX.jsx(CompactButton, { disabled: !!status?.running || status.page <= 1, onClick: () => void search(status.page - 1), children: t(language, "catalogPrev") }), SP_JSX.jsx("span", { style: small, children: status.page }), SP_JSX.jsx(CompactButton, { disabled: !!status?.running || !status.has_more || status.page >= 10, onClick: () => void search(status.page + 1), children: t(language, "catalogNext") })] }) })] })] });
+}
+function ReleaseBrowser({ repo, language, onClose, onStarted, onReposChanged }) {
+    const [status, setStatus] = SP_REACT.useState(null);
+    const [error, setError] = SP_REACT.useState("");
+    const [busy, setBusy] = SP_REACT.useState(false);
+    const active = SP_REACT.useRef(true);
+    const read = async () => {
+        try {
+            const next = await withTimeout(getReleaseStatus(), t(language, "timeout"));
+            if (active.current && next.repo.toLowerCase() === repo.toLowerCase())
+                setStatus(next);
+        }
+        catch (caught) {
+            if (active.current)
+                setError(String(caught));
+        }
+    };
+    const load = async (page) => {
+        setError("");
+        setStatus(previous => ({ running: true, repo, page, releases: [], has_more: false,
+            tracked: previous?.tracked || [], pinned_versions: previous?.pinned_versions || {},
+            installed_version: previous?.installed_version || "", error: "" }));
+        try {
+            const result = await withTimeout(startReleaseLookup(repo, page), t(language, "timeout"));
+            if (!result.success)
+                throw new Error(result.error || t(language, "releaseFailed"));
+            await read();
+        }
+        catch (caught) {
+            setError(String(caught));
+        }
+    };
+    SP_REACT.useEffect(() => {
+        active.current = true;
+        void load(1);
+        const timer = window.setInterval(() => void read(), 1000);
+        return () => { active.current = false; window.clearInterval(timer); };
+    }, [repo]);
+    const select = (release) => {
+        const warning = status?.installed_version
+            ? t(language, "selectedReplace", { version: status.installed_version })
+            : t(language, "selectedNew");
+        let handle = null;
+        const install = async () => {
+            handle?.Close();
+            setBusy(true);
+            try {
+                const result = await withTimeout(startSelectedInstall(release.token, true), t(language, "timeout"));
+                if (!result.success)
+                    throw new Error(result.error || t(language, "actionFailed"));
+                onStarted();
+            }
+            catch (caught) {
+                toaster.toast({ title: t(language, "error"), body: String(caught) });
+            }
+            finally {
+                setBusy(false);
+            }
+        };
+        handle = DFL.showModal(SP_JSX.jsx(DFL.ModalRoot, { onCancel: () => handle?.Close(), bDisableBackgroundDismiss: true, children: SP_JSX.jsxs("div", { style: { maxWidth: 500, overflowWrap: "anywhere" }, children: [SP_JSX.jsx("strong", { children: t(language, "selectedConfirm", { version: release.tag }) }), SP_JSX.jsxs("div", { style: { ...small, marginTop: 6 }, children: [repo, " \u00B7 ", release.asset_name] }), SP_JSX.jsx("div", { style: { marginTop: 9, fontSize: 12 }, children: warning }), SP_JSX.jsx("div", { style: { ...small, marginTop: 12 }, children: t(language, "notes") }), SP_JSX.jsx("div", { style: { maxHeight: 200, overflowY: "auto", whiteSpace: "pre-wrap", fontSize: 12,
+                            lineHeight: 1.4, marginTop: 7 }, children: release.changelog || t(language, "noNotes") }), SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }, children: [SP_JSX.jsx(CompactButton, { onClick: () => void install(), children: t(language, "approve") }), SP_JSX.jsx(CompactButton, { onClick: () => handle?.Close(), children: t(language, "selectedCancel") })] })] }) }), undefined, { strTitle: t(language, "selectedTitle") });
+    };
+    const pin = status?.pinned_versions[repo];
+    return SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0, overflowWrap: "anywhere" }, children: [SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "releaseTitle", { repo }), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: onClose, children: ["\u2190 ", t(language, "catalogBack")] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "selectedInstalled", {
+                                version: status?.installed_version || t(language, "notInstalled")
+                            }) }) }), pin && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: small, children: [t(language, "pinnedVersion", { version: pin }), SP_JSX.jsx("div", { style: { marginTop: 7 }, children: SP_JSX.jsx(CompactButton, { disabled: busy, onClick: () => {
+                                            setBusy(true);
+                                            void withTimeout(clearVersionPin(repo), t(language, "timeout")).then(result => {
+                                                if (!result.success)
+                                                    throw new Error(result.error || t(language, "actionFailed"));
+                                                onReposChanged();
+                                                void read();
+                                            }).catch(caught => toaster.toast({ title: t(language, "error"), body: String(caught) }))
+                                                .finally(() => setBusy(false));
+                                        }, children: t(language, "followLatest") }) })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "releaseIntro") }) }), error && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { color: colors.red, fontSize: 12 }, children: error }) }), status?.error && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { color: colors.red, fontSize: 12 }, children: status.error }) })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "releaseList"), children: [status?.running && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: small, children: [SP_JSX.jsx(FaCircleNotch, {}), " ", t(language, "catalogLoading")] }) }), !status?.running && !status?.releases.length && !status?.error &&
+                        SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "noRelease") }) }), status?.releases.map(release => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(DFL.Field, { label: release.tag, description: `${release.asset_name}${release.prerelease
+                                ? ` · ${t(language, "prerelease")}` : ""}`, icon: SP_JSX.jsx(FaDownload, {}), padding: "compact", childrenLayout: "below", bottomSeparator: "standard", children: [release.published_at && SP_JSX.jsx("div", { style: small, children: release.published_at.slice(0, 10) }), SP_JSX.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: busy || !!status?.running, onClick: () => select(release), children: t(language, "selectedInstall") }), SP_JSX.jsx("a", { href: `https://github.com/${repo}/releases/tag/${encodeURIComponent(release.tag)}`, target: "_blank", rel: "noopener noreferrer", children: "GitHub \u2197" })] })] }) }, release.token)), !!status?.releases.length && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { display: "flex", gap: 8, alignItems: "center" }, children: [SP_JSX.jsx(CompactButton, { disabled: !!status?.running || status.page <= 1, onClick: () => void load(status.page - 1), children: t(language, "catalogPrev") }), SP_JSX.jsx("span", { style: small, children: status.page }), SP_JSX.jsx(CompactButton, { disabled: !!status?.running || !status.has_more || status.page >= 10, onClick: () => void load(status.page + 1), children: t(language, "catalogNext") })] }) })] })] });
 }
 function Content() {
-    const [language, setLanguage] = SP_REACT.useState("en");
+    const language = useSystemLanguage();
     const [repos, setRepos] = SP_REACT.useState([]);
+    const [importFile, setImportFile] = SP_REACT.useState("");
     const [backendVersion, setBackendVersion] = SP_REACT.useState("");
     const [updateMode, setMode] = SP_REACT.useState("automatic");
     const [pendingUpdates, setPendingUpdates] = SP_REACT.useState([]);
@@ -696,11 +1002,13 @@ function Content() {
     const [matchReasons, setMatchReasons] = SP_REACT.useState({});
     const [mappingRepo, setMappingRepo] = SP_REACT.useState("");
     const [mappingIndex, setMappingIndex] = SP_REACT.useState(0);
-    const [fileMessage, setFileMessage] = SP_REACT.useState("");
     const [busy, setBusy] = SP_REACT.useState(false);
-    const [showImport, setShowImport] = SP_REACT.useState(false);
     const [showRepos, setShowRepos] = SP_REACT.useState(false);
+    const [showInstalled, setShowInstalled] = SP_REACT.useState(false);
     const [showCatalog, setShowCatalog] = SP_REACT.useState(false);
+    const [showGithubSearch, setShowGithubSearch] = SP_REACT.useState(false);
+    const [selectedRepo, setSelectedRepo] = SP_REACT.useState("");
+    const [pins, setPins] = SP_REACT.useState({});
     const [status, setStatus] = SP_REACT.useState("");
     const [progress, setProgress] = SP_REACT.useState(null);
     const [now, setNow] = SP_REACT.useState(Date.now());
@@ -725,8 +1033,10 @@ function Content() {
             const repoState = await withTimeout(getRepos(), t(language, "timeout"));
             setBackendVersion(repoState.backend_version || "");
             setRepos(repoState.repos);
+            setImportFile(repoState.import_file || "");
             setInstalled(repoState.installed || []);
             setMatches(repoState.matches || {});
+            setPins(repoState.pinned_versions || {});
             setMatchReasons(repoState.match_reasons || {});
             setMode(repoState.update_mode || "automatic");
             setPendingUpdates(repoState.pending_updates || []);
@@ -744,20 +1054,6 @@ function Content() {
     SP_REACT.useEffect(() => {
         void refreshRepos();
         let active = true;
-        const readLanguage = () => {
-            if (typeof SteamClient !== "undefined" && SteamClient.Settings?.GetCurrentLanguage) {
-                void SteamClient.Settings.GetCurrentLanguage().then(value => {
-                    if (active)
-                        setLanguage(systemLanguage(value));
-                }).catch(() => { if (active)
-                    setLanguage(systemLanguage(navigator.language || "en")); });
-            }
-            else
-                setLanguage(systemLanguage(navigator.language || "en"));
-        };
-        readLanguage();
-        const localeListener = typeof SteamClient !== "undefined" && SteamClient.Settings?.RegisterForSettingsChanges
-            ? SteamClient.Settings.RegisterForSettingsChanges(readLanguage) : null;
         const update = () => {
             if (pollInFlight.current)
                 return;
@@ -814,7 +1110,6 @@ function Content() {
                 approvalModal.current.Close();
                 approvalModal.current = null;
             }
-            localeListener?.unregister();
             window.clearInterval(poll);
             window.clearInterval(clock);
         };
@@ -879,35 +1174,16 @@ function Content() {
         try {
             const result = await action();
             if (!result.success)
-                throw new Error(result.error || t(language, "actionFailed"));
+                throw new Error(backendMessage(language, result.error || t(language, "actionFailed")));
             if (result.repos)
                 setRepos(result.repos);
             await refreshRepos();
-            toaster.toast({ title: t(language, "saved"), body: result.added === undefined
-                    ? t(language, "updatedList")
-                    : t(language, "added", { count: result.added, invalid: result.invalid || 0 }) });
+            toaster.toast({ title: t(language, result.file ? "importDone" : "saved"),
+                body: result.file ? t(language, "importSummary", {
+                    added: result.added || 0, existing: result.existing || 0, invalid: result.invalid || 0,
+                }) : t(language, "updatedList") });
         }
         catch (error) {
-            showError(error);
-        }
-        finally {
-            setBusy(false);
-        }
-    };
-    const importKnownFile = async () => {
-        setBusy(true);
-        setFileMessage(t(language, "searchingFile"));
-        try {
-            const result = await withTimeout(importDefault(), t(language, "timeout"));
-            if (!result.success)
-                throw new Error(result.error || t(language, "fileReadError"));
-            setFileMessage(t(language, "fileResult", { count: result.repos?.length || 0,
-                file: result.file || "repos.txt", invalid: result.invalid || 0 }));
-            await refreshRepos();
-            toaster.toast({ title: t(language, "importDone"), body: t(language, "imported", { count: result.added || 0 }) });
-        }
-        catch (error) {
-            setFileMessage(backendMessage(language, error instanceof Error ? error.message : String(error)));
             showError(error);
         }
         finally {
@@ -931,7 +1207,7 @@ function Content() {
                 throw new Error(result.error || t(language, "checkFailed"));
             sawRunning.current = true;
             setProgress({ running: true, percent: 0, index: 0, total: repos.length,
-                repo: "", phase: "repos.txt einlesen", bytes_done: 0, bytes_total: 0,
+                repo: "", phase: "Repository-Liste laden", bytes_done: 0, bytes_total: 0,
                 started: Date.now() / 1000, completed_at: 0, rows: [] });
         }
         catch (error) {
@@ -1003,7 +1279,7 @@ function Content() {
         }
     };
     SP_REACT.useEffect(() => {
-        if (showCatalog || updateMode !== "ask" || !progress || progress.running || busy || promptBlocked
+        if (showCatalog || showGithubSearch || selectedRepo || updateMode !== "ask" || !progress || progress.running || busy || promptBlocked
             || approvalSession.blocked || approvalModal.current)
             return;
         const item = pendingUpdates.find(update => !promptedReleases.current.has(`${update.repo}:${update.tag}`));
@@ -1043,7 +1319,7 @@ function Content() {
             blockPrompts();
             showError(error);
         }
-    }, [showCatalog, updateMode, pendingUpdates, progress?.running, busy, promptBlocked, popupAttempt, language]);
+    }, [showCatalog, showGithubSearch, selectedRepo, updateMode, pendingUpdates, progress?.running, busy, promptBlocked, popupAttempt, language]);
     const checking = busy || !!progress?.running;
     const elapsed = progress?.running && progress.started ? Math.max(0, Math.floor(now / 1000 - progress.started)) : 0;
     const transferred = progress?.bytes_done ? ` · ${(progress.bytes_done / 1048576).toFixed(1)}${progress.bytes_total
@@ -1058,8 +1334,12 @@ function Content() {
         : status || (progress?.completed_at
             ? t(language, "lastCheck", { date: new Date(progress.completed_at * 1000).toLocaleString(language) })
             : t(language, "noCheck"));
+    if (selectedRepo)
+        return SP_JSX.jsx("div", { style: { padding: "0 8px" }, children: SP_JSX.jsx(ReleaseBrowser, { repo: selectedRepo, language: language, onClose: () => setSelectedRepo(""), onStarted: () => { setSelectedRepo(""); setShowGithubSearch(false); setShowCatalog(false); }, onReposChanged: () => void refreshRepos(true) }) });
+    if (showGithubSearch)
+        return SP_JSX.jsx("div", { style: { padding: "0 8px" }, children: SP_JSX.jsx(GithubSearch, { language: language, onClose: () => setShowGithubSearch(false), onVersions: setSelectedRepo, onReposChanged: () => void refreshRepos(true) }) });
     if (showCatalog)
-        return SP_JSX.jsx("div", { style: { padding: "0 8px" }, children: SP_JSX.jsx(CatalogBrowser, { language: language, onClose: () => setShowCatalog(false), onReposChanged: () => void refreshRepos(true) }) });
+        return SP_JSX.jsx("div", { style: { padding: "0 8px" }, children: SP_JSX.jsx(CatalogBrowser, { language: language, onClose: () => setShowCatalog(false), onVersions: setSelectedRepo, onReposChanged: () => void refreshRepos(true) }) });
     return SP_JSX.jsxs("div", { children: [updateMode === "ask" && pendingUpdates.length > 0 && SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "approvalTitle", { count: pendingUpdates.length }), children: [progress?.running && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "waitForScan") }) }), !progress?.running && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { disabled: busy, onClick: () => {
                                 approvalModal.current?.Close();
                                 approvalModal.current = null;
@@ -1067,36 +1347,40 @@ function Content() {
                                 saveApprovalSession();
                                 resumePrompts();
                                 setPopupAttempt(value => value + 1);
-                            }, children: t(language, "resumeApprovals") }) }), pendingUpdates.map(item => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { background: "#213149", borderRadius: 9, padding: 10, width: "100%", minWidth: 0,
-                                boxSizing: "border-box", color: "#edf5ff" }, children: [SP_JSX.jsx("strong", { style: { fontSize: 13, overflowWrap: "anywhere" }, children: item.name }), SP_JSX.jsxs("div", { style: { fontSize: 11, color: colors.muted, overflowWrap: "anywhere", marginTop: 3 }, children: [item.repo, " \u00B7 ", item.installed_version || t(language, "notInstalled"), " \u2192 ", item.version] }), SP_JSX.jsx("div", { style: { marginTop: 8 }, children: SP_JSX.jsx(CompactButton, { onClick: () => setOpenedNotes(openedNotes === item.repo ? "" : item.repo), children: openedNotes === item.repo ? t(language, "hideNotes") : t(language, "notes") }) }), openedNotes === item.repo && SP_JSX.jsx("div", { style: { whiteSpace: "pre-wrap", overflowWrap: "anywhere",
+                            }, children: t(language, "resumeApprovals") }) }), pendingUpdates.map(item => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(DFL.Field, { label: item.name, icon: SP_JSX.jsx(FaClock, { color: "#ffd577" }), description: `${item.repo} · ${item.installed_version || t(language, "notInstalled")} → ${item.version}`, padding: "compact", childrenLayout: "below", bottomSeparator: "standard", children: [SP_JSX.jsx("div", { style: { marginTop: 7 }, children: SP_JSX.jsx(CompactButton, { onClick: () => setOpenedNotes(openedNotes === item.repo ? "" : item.repo), children: openedNotes === item.repo ? t(language, "hideNotes") : t(language, "notes") }) }), openedNotes === item.repo && SP_JSX.jsx("div", { style: { whiteSpace: "pre-wrap", overflowWrap: "anywhere",
                                         maxHeight: 180, overflowY: "auto", fontSize: 11, lineHeight: 1.5, margin: "9px 0",
-                                        padding: 8, background: "#111b2b", borderRadius: 7 }, children: item.changelog || t(language, "noNotes") }), SP_JSX.jsxs("div", { style: { display: "flex", gap: 7, flexWrap: "wrap", marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void decide(item.repo, true), children: busy ? t(language, "processing") : t(language, "approve") }), SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void decide(item.repo, false), children: t(language, "decline") })] })] }) }, item.repo))] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "updates"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0, boxSizing: "border-box",
-                                padding: 12, borderRadius: 12, color: "#edf5ff",
-                                background: "linear-gradient(145deg, #142338, #101827)", border: "1px solid #304761" }, children: [SP_JSX.jsxs("div", { style: { display: "flex", alignItems: "center", gap: 9, marginBottom: 11 }, children: [SP_JSX.jsx("div", { style: { width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center",
-                                                background: "#243950", color: colors.cyan, flexShrink: 0 }, children: SP_JSX.jsx(FaGithub, { size: 18 }) }), SP_JSX.jsx("strong", { style: { fontSize: 15, flex: 1, minWidth: 0 }, children: "GitHub Updates" }), SP_JSX.jsx("span", { style: { color: colors.muted, fontSize: 11, whiteSpace: "nowrap" }, children: t(language, "reposBadge", { count: repos.length }) })] }), SP_JSX.jsx("div", { style: { height: 7, borderRadius: 7, overflow: "hidden", background: "#2b3e56" }, role: "progressbar", "aria-label": t(language, "progress"), "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": progress?.running ? progress.percent : progress?.completed_at ? 100 : 0, children: SP_JSX.jsx("div", { style: { height: "100%", width: `${progress?.running ? progress.percent : progress?.completed_at ? 100 : 0}%`,
-                                            background: `linear-gradient(90deg, #33c5e9, ${colors.cyan})`, borderRadius: 7 } }) }), SP_JSX.jsx("div", { style: { color: colors.muted, fontSize: 11, marginTop: 7, marginBottom: 11,
-                                        overflowWrap: "anywhere" }, children: summary }), progress?.running && progress.repo && SP_JSX.jsx("div", { style: { color: colors.cyan, fontSize: 11,
-                                        overflowWrap: "anywhere", marginBottom: 8 }, children: progress.repo }), rows.slice(0, showAllRows ? rows.length : 4).map(row => SP_JSX.jsxs("div", { title: row.repo, style: { display: "flex", alignItems: "center", gap: 9, minWidth: 0,
-                                        padding: "9px 8px", marginTop: 5, borderRadius: 8, background: "#202e42" }, children: [SP_JSX.jsx("span", { style: { width: 20, flexShrink: 0, color: colors.cyan }, children: SP_JSX.jsx(FaDownload, { size: 13 }) }), SP_JSX.jsxs("div", { style: { minWidth: 0, flex: 1 }, children: [SP_JSX.jsx("div", { style: { fontSize: 12, fontWeight: 600, overflowWrap: "anywhere" }, children: row.name }), SP_JSX.jsx("div", { style: { fontSize: 11, color: row.state === "error" ? colors.red : colors.muted,
-                                                        overflowWrap: "anywhere", lineHeight: 1.35 }, children: rowSubtitle(language, row) })] }), SP_JSX.jsx("span", { style: { flexShrink: 0 }, children: SP_JSX.jsx(CheckIcon, { state: row.state }) })] }, row.repo)), rows.length > 4 && SP_JSX.jsx("div", { style: { marginTop: 9 }, children: SP_JSX.jsx(CompactButton, { onClick: () => setShowAllRows(!showAllRows), children: showAllRows ? t(language, "fewerRows") : t(language, "allRows", { count: rows.length }) }) }), !rows.length && SP_JSX.jsx("div", { style: { fontSize: 12, color: colors.muted }, children: t(language, "noRepos") })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: checking || restarting || (restartPending && !restartError) || pendingUpdates.length > 0, onClick: () => void check(), children: [SP_JSX.jsx(FaDownload, {}), " ", checking ? t(language, "checking") : t(language, "check")] }) }), restartError && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { color: colors.red, fontSize: 12 }, children: [t(language, restartError === "restartSignalFailed" ? "restartSignalFailed" : "restartLaunchFailed"), restartErrorDetail && SP_JSX.jsx("div", { style: { fontSize: 11, marginTop: 5, overflowWrap: "anywhere" }, children: restartErrorDetail }), SP_JSX.jsx("div", { style: { marginTop: 8 }, children: SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void retrySteamRestart(), children: t(language, "retryRestart") }) })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: updateMode === "automatic"
-                                ? t(language, "autoRestart") : t(language, "askDescription") }) }), errors.length > 2 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { onClick: () => setShowErrors(!showErrors), children: showErrors ? t(language, "hideErrors") : t(language, "allErrors", { count: errors.length }) }) }), (showErrors ? errors : errors.slice(0, 2)).map((error, index) => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { fontSize: "0.85em", color: "#ffaaaa", overflowWrap: "anywhere" }, children: error }) }, index))] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "settings"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "modeTitle") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Dropdown, { rgOptions: [
-                                { label: t(language, "automatic"), data: "automatic" },
-                                { label: t(language, "ask"), data: "ask" },
-                            ], selectedOption: updateMode, disabled: checking || pendingUpdates.length > 0, onChange: item => void saveMode(item.data) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, updateMode === "ask" ? "askDescription" : "autoDescription") }) })] }), SP_JSX.jsx(DFL.PanelSection, { children: SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: checking || restarting || pendingUpdates.length > 0, onClick: () => setShowCatalog(true), children: [SP_JSX.jsx(FaSearch, {}), " ", t(language, "browsePlugins")] }) }) }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "repositories", { count: repos.length }), children: [repos.length > 0 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { ...spaced, flexWrap: "wrap" }, children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowRepos(!showRepos), children: [SP_JSX.jsx(FaChevronDown, {}), " ", showRepos ? t(language, "closeList") : t(language, "showList")] }) }) }), showRepos && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { onClick: () => void refreshRepos(), children: t(language, "refreshInstalled") }) }), showRepos && repos.map(repo => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { children: [SP_JSX.jsx("div", { style: { ...spaced }, children: SP_JSX.jsxs("span", { style: { fontSize: "0.86em", overflowWrap: "anywhere" }, children: [SP_JSX.jsx(FaGithub, {}), " ", repo] }) }), SP_JSX.jsx("div", { style: small, children: matches[repo] ? t(language, "installedVersion", { name: matches[repo]?.name || "",
-                                        version: matches[repo]?.version || "" })
-                                        : matchReasons[repo] ? backendMessage(language, matchReasons[repo] || "") : t(language, "missing") }), SP_JSX.jsx(CompactButton, { disabled: !installed.length, onClick: () => {
-                                        setMappingRepo(mappingRepo === repo ? "" : repo);
-                                        setMappingIndex(Math.max(0, installed.findIndex(p => p.folder === matches[repo]?.folder)));
-                                    }, children: t(language, "assign") })] }) }, repo)), showRepos && mappingRepo && installed.length > 0 && SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "pluginFor", { repo: mappingRepo }) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Dropdown, { rgOptions: installed.map((plugin, index) => ({ label: `${plugin.name} (${plugin.version})`, data: index })), selectedOption: mappingIndex, onChange: item => setMappingIndex(Number(item.data)) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { disabled: busy, onClick: () => void mutate(async () => {
+                                        padding: 8, background: "rgba(0, 0, 0, 0.18)", borderRadius: 4 }, children: item.changelog || t(language, "noNotes") }), SP_JSX.jsxs("div", { style: { display: "flex", gap: 7, flexWrap: "wrap", marginTop: 8 }, children: [SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void decide(item.repo, true), children: busy ? t(language, "processing") : t(language, "approve") }), SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void decide(item.repo, false), children: t(language, "decline") })] })] }) }, item.repo))] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "updates"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { width: "100%", minWidth: 0, padding: "3px 0 8px" }, children: [SP_JSX.jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center",
+                                        gap: 8, fontSize: 12, marginBottom: 8 }, children: [SP_JSX.jsxs("span", { style: { display: "flex", alignItems: "center", gap: 6 }, children: [SP_JSX.jsx(FaGithub, {}), " ", t(language, "appTitle")] }), SP_JSX.jsx("span", { style: { opacity: 0.7 }, children: t(language, "reposBadge", { count: repos.length }) })] }), SP_JSX.jsx("div", { style: { height: 6, borderRadius: 6, overflow: "hidden",
+                                        background: "rgba(255, 255, 255, 0.17)" }, role: "progressbar", "aria-label": t(language, "progress"), "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": progress?.running ? progress.percent : progress?.completed_at ? 100 : 0, children: SP_JSX.jsx("div", { style: { height: "100%", width: `${progress?.running ? progress.percent : progress?.completed_at ? 100 : 0}%`,
+                                            background: colors.cyan, borderRadius: 6 } }) }), SP_JSX.jsx("div", { style: { fontSize: 12, opacity: 0.8, marginTop: 8,
+                                        overflowWrap: "anywhere" }, children: summary }), progress?.running && progress.repo && SP_JSX.jsx("div", { style: { fontSize: 12, overflowWrap: "anywhere",
+                                        marginTop: 5 }, children: progress.repo })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: checking || restarting || (restartPending && !restartError) || pendingUpdates.length > 0, onClick: () => void check(), children: [SP_JSX.jsx(FaDownload, {}), " ", checking ? t(language, "checking") : t(language, "check")] }) }), rows.slice(0, showAllRows ? rows.length : 4).map(row => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Field, { label: row.name, description: SP_JSX.jsx("span", { style: { color: row.state === "error" ? colors.red : undefined,
+                                    overflowWrap: "anywhere" }, children: rowSubtitle(language, row) }), icon: SP_JSX.jsx(CheckIcon, { state: row.state }), padding: "compact", bottomSeparator: "standard" }) }, row.repo)), rows.length > 4 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { onClick: () => setShowAllRows(!showAllRows), children: showAllRows ? t(language, "fewerRows") : t(language, "allRows", { count: rows.length }) }) }), !rows.length && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "noRepos") }) }), restartError && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs("div", { style: { color: colors.red, fontSize: 12 }, children: [t(language, restartError === "restartSignalFailed" ? "restartSignalFailed" : "restartLaunchFailed"), restartErrorDetail && SP_JSX.jsx("div", { style: { fontSize: 11, marginTop: 5, overflowWrap: "anywhere" }, children: restartErrorDetail }), SP_JSX.jsx("div", { style: { marginTop: 8 }, children: SP_JSX.jsx(CompactButton, { disabled: busy || !!progress?.running, onClick: () => void retrySteamRestart(), children: t(language, "retryRestart") }) })] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: updateMode === "automatic"
+                                ? t(language, "autoRestart") : t(language, "askDescription") }) }), errors.length > 2 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { onClick: () => setShowErrors(!showErrors), children: showErrors ? t(language, "hideErrors") : t(language, "allErrors", { count: errors.length }) }) }), (showErrors ? errors : errors.slice(0, 2)).map((error, index) => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { fontSize: "0.85em", color: "#ffaaaa", overflowWrap: "anywhere" }, children: error }) }, index))] }), SP_JSX.jsxs(DFL.PanelSection, { children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: checking || restarting || pendingUpdates.length > 0, onClick: () => setShowGithubSearch(true), children: [SP_JSX.jsx(FaSearch, {}), " ", t(language, "githubSearchTitle")] }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { disabled: checking || restarting || pendingUpdates.length > 0, onClick: () => setShowCatalog(true), children: [SP_JSX.jsx(FaSearch, {}), " ", t(language, "browsePlugins")] }) })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "installedPlugins", { count: installed.length }), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowInstalled(value => !value), children: [SP_JSX.jsx(FaChevronDown, {}), " ", showInstalled ? t(language, "closeList") : t(language, "showList")] }) }), showInstalled && installed.map(plugin => {
+                        const repo = Object.keys(matches).find(item => matches[item]?.folder === plugin.folder) || plugin.repo || "";
+                        return SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Field, { label: plugin.name, description: `v${plugin.version} · ${repo || t(language, "unknownRepository")}`, padding: "compact", bottomSeparator: "standard", childrenLayout: "below", icon: SP_JSX.jsx(FaGithub, {}), children: SP_JSX.jsx("div", { style: { marginTop: 7 }, children: SP_JSX.jsx(CompactButton, { disabled: checking || busy || pendingUpdates.length > 0, onClick: () => repo ? setSelectedRepo(repo) : setShowGithubSearch(true), children: repo ? t(language, "otherVersions") : t(language, "githubSearchTitle") }) }) }) }, plugin.folder);
+                    })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "repositories", { count: repos.length }), children: [importFile && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Field, { label: t(language, "importTitle"), description: t(language, "importDescription", { file: importFile }), padding: "compact", icon: SP_JSX.jsx(FaDownload, {}), childrenLayout: "below", children: SP_JSX.jsx("div", { style: { marginTop: 6 }, children: SP_JSX.jsx(CompactButton, { disabled: checking || busy || pendingUpdates.length > 0, onClick: () => void mutate(() => withTimeout(importReposFile(), t(language, "timeout"), 10000)), children: t(language, "importButton") }) }) }) }), repos.length > 0 && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { ...spaced, flexWrap: "wrap" }, children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowRepos(!showRepos), children: [SP_JSX.jsx(FaChevronDown, {}), " ", showRepos ? t(language, "closeList") : t(language, "showList")] }) }) }), showRepos && SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { onClick: () => void refreshRepos(), children: t(language, "refreshInstalled") }) }), showRepos && repos.map(repo => SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(DFL.Field, { label: repo, icon: SP_JSX.jsx(FaGithub, {}), padding: "compact", bottomSeparator: "standard", childrenLayout: "below", description: matches[repo] ? t(language, "installedVersion", {
+                                name: matches[repo]?.name || "", version: matches[repo]?.version || "",
+                            }) : matchReasons[repo] ? backendMessage(language, matchReasons[repo] || "") : t(language, "missing"), children: [pins[repo] && SP_JSX.jsx("div", { style: { ...small, marginBottom: 6 }, children: t(language, "pinnedVersion", { version: pins[repo] }) }), SP_JSX.jsxs("div", { style: { ...spaced, flexWrap: "wrap" }, children: [SP_JSX.jsx(CompactButton, { disabled: checking || busy || pendingUpdates.length > 0, onClick: () => setSelectedRepo(repo), children: t(language, "otherVersions") }), pins[repo] && SP_JSX.jsx(CompactButton, { disabled: checking || busy || pendingUpdates.length > 0, onClick: () => void mutate(() => clearVersionPin(repo)), children: t(language, "followLatest") }), SP_JSX.jsx(CompactButton, { disabled: !installed.length, onClick: () => {
+                                                setMappingRepo(mappingRepo === repo ? "" : repo);
+                                                setMappingIndex(Math.max(0, installed.findIndex(p => p.folder === matches[repo]?.folder)));
+                                            }, children: t(language, "assign") }), SP_JSX.jsx(CompactButton, { disabled: checking || busy || pendingUpdates.length > 0, onClick: () => void mutate(async () => {
+                                                const result = await setCatalogRepo(repo, false);
+                                                if (result.success && mappingRepo === repo)
+                                                    setMappingRepo("");
+                                                return result;
+                                            }), children: t(language, "catalogRemove") })] })] }) }, repo)), showRepos && mappingRepo && installed.length > 0 && SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "pluginFor", { repo: mappingRepo }) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 6,
+                                        maxHeight: 170, overflowY: "auto" }, children: installed.map((plugin, index) => SP_JSX.jsxs(FilterButton, { selected: mappingIndex === index, onClick: () => setMappingIndex(index), children: [plugin.name, " (", plugin.version, ")"] }, plugin.folder)) }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { disabled: busy, onClick: () => void mutate(async () => {
                                         const result = await setMapping(mappingRepo, installed[mappingIndex].folder);
                                         if (result.success)
                                             setMappingRepo("");
                                         return result;
-                                    }), children: t(language, "saveAssignment") }) })] })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "import"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: backendVersion ? `Backend v${backendVersion}` : t(language, "disconnected") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsxs(CompactButton, { onClick: () => setShowImport(!showImport), children: [SP_JSX.jsx(FaFileUpload, {}), " ", showImport ? t(language, "close") : t(language, "openFile")] }) }), showImport && SP_JSX.jsxs(SP_JSX.Fragment, { children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: { ...small, overflowWrap: "anywhere" }, children: fileMessage || t(language, "importInfo") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(CompactButton, { disabled: busy, onClick: () => void importKnownFile(), children: t(language, "reloadFile") }) })] })] })] });
+                                    }), children: t(language, "saveAssignment") }) })] })] }), SP_JSX.jsxs(DFL.PanelSection, { title: t(language, "settings"), children: [SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Field, { label: t(language, "storageLabel"), description: `${t(language, "storageInfo")} · ${backendVersion
+                                ? `Backend v${backendVersion}` : t(language, "disconnected")}`, icon: SP_JSX.jsx(FaGithub, {}), padding: "compact" }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.ToggleField, { label: t(language, "modeTitle"), description: t(language, updateMode === "automatic" ? "autoDescription" : "askDescription"), checked: updateMode === "automatic", disabled: checking || busy || pendingUpdates.length > 0, onChange: checked => void saveMode(checked ? "automatic" : "ask") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx("div", { style: small, children: t(language, "selfUpdateInfo") }) }), SP_JSX.jsx(DFL.PanelSectionRow, { children: SP_JSX.jsx(DFL.Field, { label: t(language, "languageLabel"), description: `${t(language, "languageAuto")} · ${t(language, "languageName")}`, icon: SP_JSX.jsx(FaGlobe, {}), padding: "compact" }) })] })] });
 }
 var index = definePlugin(() => ({
     name: "Github Plugin Updater",
-    titleView: SP_JSX.jsx("div", { style: { fontSize: 19, lineHeight: "24px", fontWeight: 600 }, children: "GitHub Updates" }),
+    titleView: SP_JSX.jsx(LocalizedTitle, {}),
     content: SP_JSX.jsx(Content, {}),
     icon: SP_JSX.jsx(FaGithub, {}),
 }));

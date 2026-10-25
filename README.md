@@ -9,6 +9,7 @@
 ## Funktionen
 
 - Speichert überwachte Repositories dauerhaft in den Decky-Einstellungen. Beim ersten Start nach dem Upgrade werden Einträge aus älteren Versionen einmalig übernommen.
+- Ist eine `repos.txt` im Downloads-Ordner vorhanden, kannst du ihre Links per Knopfdruck zusätzlich importieren. Bereits überwachte Repositories werden nicht dupliziert.
 - **Decky-Plugins durchsuchen** öffnet einen durchsuchbaren Katalog mit Plugins, Autoren, Tags und Releases. **Zum Updater hinzufügen** speichert das Repository intern; für vorhandene Einträge erscheint **Aus dem Updater entfernen**.
 - **GitHub durchsuchen** sucht live nach Plugin-Namen, `owner/repo` oder GitHub-URLs, auch außerhalb des kuratierten Katalogs. Suchergebnisse können direkt zur Überwachung hinzugefügt werden.
 - **Andere Versionen** zeigt die veröffentlichten Release-ZIPs eines Repositories samt Changelog. Auch ältere Versionen und Vorabversionen können nach einer ausdrücklichen Bestätigung installiert werden. Eine manuell gewählte ältere Version bleibt gespeichert; automatische Updates für dieses Repo pausieren bis **Wieder neueste Version verfolgen** gewählt wird.
@@ -25,9 +26,9 @@
 
 ## Installation
 
-1. Die bereitgestellte `github-plugin-updater-v1.9.1.zip` herunterladen und entpacken.
+1. Die bereitgestellte `github-plugin-updater-v1.9.2.zip` herunterladen und entpacken.
 2. Den darin enthaltenen Ordner `github-plugin-updater` nach `~/homebrew/plugins/` kopieren. Bei einem Update den bisherigen Ordner ersetzen; keine zweite Installation unter anderem Namen anlegen.
-3. Decky Loader oder das Gerät neu starten. Unter **Einstellungen → Repository-Speicher** sollte **Backend v1.9.1** stehen.
+3. Decky Loader oder das Gerät neu starten. Unter **Einstellungen → Repository-Speicher** sollte **Backend v1.9.2** stehen.
 
 Ist Decky nach einem Neustart mit einer älteren Updater-Version nicht sichtbar, Decky Loader im Terminal mit `sudo systemctl restart plugin_loader.service` neu starten und danach dieses Update installieren.
 
@@ -41,7 +42,9 @@ Das Plugin besitzt das Decky-Flag `root`, weil automatische Installationen Schre
 
 Öffne **Decky-Plugins durchsuchen** und wähle bei gewünschten Plugins **Zum Updater hinzufügen**. In **Überwachte Repositories** kannst du einzelne Einträge wieder entfernen oder einem installierten Decky-Plugin zuordnen. Die Liste wird in Deckys Plugin-Einstellungen gespeichert und bleibt nach Neustarts und Updates erhalten. Zum Prüfen und Installieren ist keine Datei im Downloads-Ordner mehr nötig.
 
-**Upgrade von älteren Versionen:** Beim ersten Start übernimmt das Plugin gültige Repository-Einträge aus der früheren Downloads-Datei einmalig in die interne Liste. Danach verwaltest du alle Repositories direkt im Plugin; spätere Änderungen an der alten Datei werden nicht übernommen.
+**Optionaler Datei-Import:** Liegt eine `repos.txt` im konfigurierten XDG-Downloads-Ordner, `~/Downloads`, `/home/deck/Downloads` oder `/home/bazzite/Downloads`, erscheint unter **Überwachte Repositories** die Schaltfläche **repos.txt importieren**. Der Klick übernimmt gültige GitHub-Links zusätzlich in die interne Liste. Kommentare und Leerzeilen werden ignoriert, doppelte Einträge übersprungen und die Datei bleibt unverändert. Die Meldung zeigt an, wie viele Einträge hinzugefügt, bereits vorhanden oder ungültig waren. Erstellst du die Datei bei bereits geöffneter Plugin-Ansicht, öffne die Ansicht erneut, damit der Knopf erscheint. Spätere Änderungen an der Datei werden nur nach erneutem Klick eingelesen.
+
+**Upgrade von älteren Versionen:** Beim ersten Start übernimmt das Plugin gültige Repository-Einträge aus der früheren Downloads-Datei einmalig in die interne Liste. Danach verwaltest du alle Repositories direkt im Plugin; spätere Änderungen an der Datei werden nur über den Importknopf übernommen.
 
 ## GitHub-Suche und Versionsauswahl
 
