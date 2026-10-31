@@ -14,3 +14,8 @@ https://github.com/Steamdeckchecker/Quest-Compendium-Decky
 https://github.com/justinca92/spindeck
 https://github.com/Kaal31/benderthemes
 https://github.com/PeroTuncay/DeckyHelixSRManager
+https://github.com/mazillka/deckyhub-plugin
+https://github.com/Hooandee/decky-colores
+https://github.com/sauliiin/Jedi-ReFrameShade4All
+https://github.com/Hector2242/decky-plugin
+https://github.com/Alyenax/Decky-Animated-Screensaver#decky-animated-screensaver
